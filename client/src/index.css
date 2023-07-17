@@ -1,73 +1,208 @@
+@import url(https://fonts.googleapis.com/css?family=Sintony&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Poppins&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+@import-normalize;
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+/* @font-face {
+  font-display: swap;
+  font-family: 'Sintony';
+  font-style: normal;
   font-weight: 400;
+  src: url('/fonts/sintony-v13-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Sintony';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/sintony-v13-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/poppins-v20-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Poppins';
+  font-style: italic;
+  font-weight: 400;
+  src: url('/fonts/poppins-v20-latin-italic.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/poppins-v20-latin-700.woff2') format('woff2');
+} */
 
+:root {
+  --clr-headline: #1f1235;
+  --clr-paragraph: #5f6c7b;
+  --clr-btn: #ff6e6c;
+  --clr-btn-text: #1f1235;
+  --clr-stroke: #1f1235;
+  --clr-main: #FFFFFF;
+  --clr-primary: #ff6e6c;
+  --clr-secondary: #67568c;
+  --clr-tertiary: #fbdd74;
+  --clr-grey-1: #0a0a0a;
+  --clr-grey-2: #111827;
+  --clr-grey-3: #1f2937;
+  --clr-grey-4: #374151;
+  --clr-grey-5: #6b7280;
+  --clr-grey-6: #9ca3af;
+  --clr-grey-7: #d1d5db;
+  --clr-grey-8: #e5e7eb;
+  --clr-grey-9: #f3f4f6;
+  --clr-grey-10: #f3f4f6;
+  --normal: 'Poppins', system-ui, sans-serif;
+  --header: 'Sintony', system-ui, sans-serif;
+  --shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --transition: all 0.2s linear;
+  --spacing: 0.25rem;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+.hide {
+  display: none;
 }
-a:hover {
-  color: #535bf2;
+.dark {
+  --clr-headline: #fffffe;
+  --clr-paragraph: #a7a9be;
+  --clr-btn: #ff8906;
+  --clr-btn-text: #fffffe;
+  --clr-stroke: black;
+  --clr-main: #0f0e17;
+  --clr-primary: #ff8906;
+  --clr-secondary: #f25f4c;
+  --clr-tertiary: #e53170;
+  --clr-grey-10: #0a0a0a;
+  --clr-grey-9: #111827;
+  --clr-grey-8: #1f2937;
+  --clr-grey-7: #374151;
+  --clr-grey-6: #6b7280;
+  --clr-grey-5: #9ca3af;
+  --clr-grey-4: #d1d5db;
+  --clr-grey-3: #e5e7eb;
+  --clr-grey-2: #f3f4f6;
+  --clr-grey-1: #f3f4f6;
 }
-
-body {
+html {
+  font-size: 100%;
+}
+*, ::after, ::before {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  box-sizing: border-box;
+  /* border: solid 1px black; */
 }
-
+body {
+  font-family: var(--normal);
+  background: var(--clr-backgroud);
+  color: var(--clr-headline);
+  line-height: 1.5;
+  font-size: 1rem;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+div {
+  white-space: pre-wrap;
+}
+a {
+  text-decoration: none;
+  color: var(--clr-headline);
+}
+img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+textarea {
+  padding: 1em;
+  line-height: normal;
+  text-indent: 0.5em;
+  letter-spacing: normal;
+  font-size: 1.1em;
+  border: 2px solid var(--clr-grey-1);
+  resize: none;
+}
+textarea:focus {
+  border-color: transparent;
+  border-radius: 5px;
+  outline: 3px solid var(--clr-primary);
+}
+h1, h2, h3, h4, h5 {
+  letter-spacing: var(--spacing);
+  line-height: 1.3;
+  margin: 0;
+  font-family: var(--header);
+  color: var(--clr-headline);
+}
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 3rem;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.25rem;
+}
+h4 {
+  font-size: 0.875rem;
+}
+p {
+  margin-bottom: 1.25rem;
+  color: var(--clr-paragraph);
+}
+label {
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
+input {
+  padding: 0.5em 1em;
+  background-color: var(--clr-white);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+input:focus {
+  outline: none;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+::placeholder {
+  color: var(--clr-paragraph);
+  font-family: inherit;
+}
+button {
+  text-transform: uppercase;
+  background: var(--clr-btn);
+  color: var(--clr-btn-text);
+  letter-spacing: var(--spacing);
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+@media screen and (max-width: 500px) {
+  h1 {
+    font-size: 2rem;
   }
-  a:hover {
-    color: #747bff;
+  h2 {
+    font-size: 1.5rem;
   }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
+}

@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Frilore back-end",
+  "main": "./src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eusebiuuu/frilore.git"
+  },
+  "author": "eusebiuu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eusebiuuu/frilore/issues"
+  },
+  "homepage": "https://github.com/eusebiuuu/frilore#readme",
+  "dependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
