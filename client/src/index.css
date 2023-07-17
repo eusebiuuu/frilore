@@ -116,7 +116,7 @@ html {
 }
 body {
   font-family: var(--normal);
-  background: var(--clr-backgroud);
+  background: var(--clr-grey-9);
   color: var(--clr-headline);
   line-height: 1.5;
   font-size: 1rem;
