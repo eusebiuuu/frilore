@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Frilore back-end",
   "main": "./src/server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha ./src/api/**/*.test.js",
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js"
   },
@@ -18,7 +19,36 @@
     "url": "https://github.com/eusebiuuu/frilore/issues"
   },
   "homepage": "https://github.com/eusebiuuu/frilore#readme",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  },
   "dependencies": {
-    "nodemon": "^3.0.1"
+    "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.1.0",
+    "express-rate-limit": "^5.4.1",
+    "helmet": "^4.6.0",
+    "http-status-codes": "^2.1.4",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.0.8",
+    "morgan": "^1.10.0",
+    "stripe": "^12.6.0",
+    "validator": "^13.6.0"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }

@@ -7,7 +7,7 @@ function getColor(variable) {
 }
 
 export default {
-  purge: [
+  content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
