@@ -1,5 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Sintony&display=swap);
-@import url(https://fonts.googleapis.com/css?family=Poppins&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
 @import-normalize;
 
@@ -7,7 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @font-face {
+@font-face {
   font-display: swap;
   font-family: 'Sintony';
   font-style: normal;
@@ -21,6 +19,7 @@
   font-weight: 700;
   src: url('/fonts/sintony-v13-latin-700.woff2') format('woff2');
 }
+
 @font-face {
   font-display: swap;
   font-family: 'Poppins';
@@ -41,7 +40,7 @@
   font-style: normal;
   font-weight: 700;
   src: url('/fonts/poppins-v20-latin-700.woff2') format('woff2');
-} */
+}
 
 :root {
   --clr-headline: #1f1235;
@@ -128,10 +127,10 @@ ul {
 div {
   white-space: pre-wrap;
 }
-a {
+/* a {
   text-decoration: none;
   color: var(--clr-headline);
-}
+} */
 img {
   width: 100%;
   display: block;
@@ -146,17 +145,13 @@ textarea {
   border: 2px solid var(--clr-grey-1);
   resize: none;
 }
-textarea:focus {
-  border-color: transparent;
-  border-radius: 5px;
-  outline: 3px solid var(--clr-primary);
-}
 h1, h2, h3, h4, h5 {
   letter-spacing: var(--spacing);
   line-height: 1.3;
   margin: 0;
   font-family: var(--header);
-  color: var(--clr-headline);
+  font-weight: bold;
+  /* color: var(--clr-headline); */
 }
 h1 {
   font-size: 3rem;
@@ -177,6 +172,9 @@ p {
 label {
   cursor: pointer;
 }
+svg {
+  vertical-align: bottom;
+}
 input {
   padding: 0.5em 1em;
   background-color: var(--clr-white);
@@ -189,14 +187,18 @@ input:focus {
   font-family: inherit;
 }
 button {
-  text-transform: uppercase;
-  background: var(--clr-btn);
-  color: var(--clr-btn-text);
-  letter-spacing: var(--spacing);
-  transition: var(--transition);
   cursor: pointer;
   border: none;
   font-family: inherit;
+}
+@layer components {
+  .rotate-scroll {
+    transform: rotateX(180deg);
+    -webkit-transform:rotateX(180deg);
+  }
+  .rotate-x {
+    transform: rotateX(180deg);
+  }
 }
 @media screen and (max-width: 500px) {
   h1 {

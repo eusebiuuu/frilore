@@ -30,6 +30,16 @@ export default {
         main: "var(--clr-main)",
         headline: "var(--clr-headline)",
         stroke: "var(--clr-stroke)",
+      },
+      minWidth: {
+        '0': '0',
+        '96': '24rem',
+        '1/2': '50%',
+        '3/4': '75%',
+        'full': '100%',
+      },
+      gridTemplateColumns: {
+        'profile': 'auto 1fr'
       }
     }
   },
