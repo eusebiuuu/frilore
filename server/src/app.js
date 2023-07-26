@@ -16,7 +16,7 @@ const app = express();
 
 app.set('trust proxy', 1);
 app.use(cors({
-  origin: ['http://locahost:5137']
+  origin: ['http://locahost:5173']
 }));
 app.use(RateLimit({
   windowMs: 100 * 60 * 15,
