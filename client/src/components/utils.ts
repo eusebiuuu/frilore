@@ -1,7 +1,6 @@
 import { FC } from "react"
 import { AiFillProject,AiFillHome } from 'react-icons/ai'
 import { BiTask } from 'react-icons/bi'
-import { ImStatsBars } from 'react-icons/im'
 import { BsFacebook, BsLinkedin, BsTwitter, BsYoutube,BsChatDots } from 'react-icons/bs'
 
 export type SidebarLink = {
@@ -31,14 +30,8 @@ export const sidebarLinks: SidebarLink[] = [
     icon: BiTask,
   },
   {
-    id: 2,
-    text: 'Personal statistics',
-    link: '/stats',
-    icon: ImStatsBars,
-  },
-  {
     id: 3,
-    text: 'Chat',
+    text: 'Chats',
     link: '/chat',
     icon: BsChatDots
   }

@@ -4,6 +4,11 @@ import { BsLayoutSidebar } from 'react-icons/bs'
 import { useUserContext } from '../context/user';
 import { Link } from 'react-router-dom';
 
+
+/*
+- Login & Register when user us undefined
+- Notifications: modal, FB model, types of notifications, last 10 notifications
+*/
 export default function Navbar() {
   const { onSidebarToggle } = useUserContext();
   return (

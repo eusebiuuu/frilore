@@ -3,9 +3,10 @@ import authController from './auth.controller.js'
 
 const authRouter = Router();
 
-authRouter.get('/:id', authController.getAuths);
-authRouter.post('/', authController.createAuth);
-authRouter.patch('/:id', authController.editAuth);
-authRouter.delete('/:id', authController.deleteAuth);
+authRouter.get('/', authController.getCurrentUser);
+authRouter.get('/isValid', authController.isValidEmail);
+authRouter.post('/register', authController.register);
+authRouter.post('/login', authController.login);
+authRouter.delete('/logout', authController.logout);
 
 export default authRouter;

@@ -7,6 +7,11 @@ import Members from "../../components/Members";
 import TaskModal from "./TaskModal";
 import CreateTaskModal from "./CreateTaskModal";
 
+/*
+- Tasks board for single project similar with this one
+- Add assigned to filters
+*/
+
 export default function AssignedTasks() {
   const [criteria, setCriteria] = useState('closest deadline');
   const [status, setStatus] = useState(Array.from(StatusTypes, () => true));

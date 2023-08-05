@@ -118,5 +118,37 @@ export const tasks = [
     days: 12,
     description: 'Food design is required for our new project let\'s research the best practices.'
   },
+]
 
+export const people = [
+  {
+    id: 0,
+    name: 'John Smith1',
+    role: 'web designer'
+  },
+  {
+    id: 1,
+    name: 'John Smith2',
+    role: 'web designer'
+  },
+  {
+    id: 2,
+    name: 'John Smith3',
+    role: 'web designer'
+  },
+  {
+    id: 3,
+    name: 'John Smith4',
+    role: 'web designerwwwww'
+  },
+  {
+    id: 4,
+    name: 'John Smith5',
+    role: 'web designer'
+  },
+  {
+    id: 5,
+    name: 'John Smith6',
+    role: 'web designer'
+  }
 ]

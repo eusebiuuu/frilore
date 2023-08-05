@@ -7,6 +7,15 @@ import logo from '../../assets/logo.svg'
 import { Link } from "react-router-dom";
 import Members from "../../components/Members";
 
+/*
+- Single task: draggings, open modal, update task
+- Last updates functionalities: DB model??, last 20 updates
+- Lists: create, delete, clear all tasks, add task, sections, cloning, 
+- General: update members, update project, delete project, chat redirection
+- Registration CRUD & the rest of the models CRUD
+- Leave project etc.
+*/
+
 export default function SingleProject() {
   const [updates, setUpdates] = useState(false);
   const [members, setMembers] = useState(false);
