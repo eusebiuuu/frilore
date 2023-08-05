@@ -7,6 +7,9 @@ import { projects } from './utils.profile'
 import { Link } from 'react-router-dom'
 import project from '../../assets/project.png'
 
+/*
+- Delete with modal confirmation and warning
+*/
 const formData = {
   firstName: '',
   lastName: '',

@@ -1,32 +1,49 @@
 import { StatusCodes } from "http-status-codes";
+import { checkPermissions } from "../utils.api.js";
+import pool from "../../services/database.js";
+import { createListQuery, deleteListQuery, getAllListsQuery, getSingleListQuery } from "./list.queries.js";
+import CustomAPIError from "../../utils.js";
 
 const getLists = async (req, res) => {
+  // auth
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const { projectID } = req.body;
+  await checkPermissions(userID, projectID, false);
+  const matchingLists = await pool.query(getAllListsQuery, [projectID]);
   return res.status(StatusCodes.OK).json({
-    data: 'Get List'
+    lists: matchingLists.rows
   });
 }
 
 const createList = async (req, res) => {
+  // auth
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const { title, projectID } = req.body;
+  await checkPermissions(userID, projectID, true);
+  const newList = await pool.query(createListQuery, [title, projectID]);
   return res.status(StatusCodes.OK).json({
-    data: 'Create List'
-  });
-}
-
-const editList = async (req, res) => {
-  return res.status(StatusCodes.OK).json({
-    data: 'Edit List'
+    list: newList.rows[0],
   });
 }
 
 const deleteList = async (req, res) => {
+  // auth
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const { id: listID } = req.params;
+  const matchingList = await pool.query(getSingleListQuery, [listID]);
+  if (matchingList.rowCount !== 1) {
+    throw new CustomAPIError('List not found', StatusCodes.BAD_REQUEST);
+  }
+  const projectID = matchingList.rows[0].project;
+  await checkPermissions(userID, projectID, true);
+  await pool.query(deleteListQuery, [listID]);
   return res.status(StatusCodes.OK).json({
-    data: 'Delete List'
+    msg: 'List deleted successfully'
   });
 }
 
 export default {
   createList,
-  editList,
   deleteList,
   getLists
 }

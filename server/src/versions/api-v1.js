@@ -6,6 +6,8 @@ import registrationRouter from '../api/registration/registration.router.js';
 import listRouter from '../api/list/list.router.js';
 import assignmentRouter from '../api/assignment/assignment.router.js';
 import authRouter from '../api/auth/auth.router.js';
+import messageRouter from '../api/message/message.router.js';
+import userRouter from '../api/user/user.router.js';
 
 const version1Router = Router();
 
@@ -16,5 +18,7 @@ version1Router.use('/registration', registrationRouter);
 version1Router.use('/list', listRouter);
 version1Router.use('/assignment', assignmentRouter);
 version1Router.use('/auth', authRouter);
+version1Router.use('/message', messageRouter);
+version1Router.use('/user', userRouter);
 
 export default version1Router;

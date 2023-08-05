@@ -7,6 +7,10 @@ import { MdPriorityHigh, MdOutlinePerson } from 'react-icons/md'
 import { BsFillPeopleFill } from 'react-icons/bs'
 import { AiOutlineClockCircle } from "react-icons/ai";
 
+/*
+- Delete task
+*/
+
 type TaskModalProps = {
   isOpen: boolean,
   onModalClose: () => void,

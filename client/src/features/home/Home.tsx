@@ -3,6 +3,10 @@ import { details, messages, numbers } from './utils'
 import image3 from '../../assets/home3.svg'
 import image1 from '../../assets/home1.svg'
 
+/*
+- Show only when the user is undefined
+*/
+
 export default function Home() {
   const [idx, setIdx] = useState(0);
   return (
