@@ -1,55 +1,4 @@
 
-type SingleTaskType = {
-  id: number,
-    title: string,
-    deadline: Date,
-    createdDate: Date,
-    priority: 'low' | 'high',
-    status: 'completed' | 'pending' | 'to do',
-    author: string,
-}
-
-type TaskType = Array<SingleTaskType>
-
-export const tasks: TaskType = [
-  {
-    id: 0,
-    title: 'Make an Automatic Payment System that enable the design',
-    deadline: new Date(),
-    createdDate: new Date(),
-    priority: 'low',
-    status: 'completed',
-    author: 'John Smith',
-  },
-  {
-    id: 1,
-    title: 'Make an Automatic Payment System that enable the design',
-    deadline: new Date(),
-    createdDate: new Date(),
-    priority: 'low',
-    status: 'to do',
-    author: 'John Smith',
-  },
-  {
-    id: 2,
-    title: 'Make an Automatic Payment System that enable the design',
-    deadline: new Date(),
-    createdDate: new Date(),
-    priority: 'low',
-    status: 'pending',
-    author: 'John Smith',
-  },
-  {
-    id: 3,
-    title: 'Make an Automatic Payment System that enable the design',
-    deadline: new Date(),
-    createdDate: new Date(),
-    priority: 'low',
-    status: 'completed',
-    author: 'John Smith',
-  },
-];
-
 export const getDaysAgo = (curDate: Date): number => {
   const oldMilisec = curDate.getMilliseconds();
   const nowMilisec = new Date().getMilliseconds();
@@ -58,6 +7,26 @@ export const getDaysAgo = (curDate: Date): number => {
   const days = Math.ceil(diff / oneDay);
   return days;
 }
+
+export type Colour = 'red' | 'orange' | 'green';
+
+export type TaskMember = {
+  user_id: string,
+  type: 'assignee' | 'reporter' | 'none',
+  username: string,
+  role: string,
+}
+
+export const statusColour = new Map<string, string>([
+  ['to do', 'red'],
+  ['pending', 'orange'],
+  ['completed', 'green']
+]);
+
+export const priorityColour = new Map<string, string>([
+  ['high', 'red'],
+  ['low', 'orange'],
+]);
 
 export const StatusTypes = ['to do', 'pending', 'completed'];
 
@@ -76,42 +45,10 @@ export const tagClasses = {
   }
 }
 
-export const people = [
-  {
-    id: 0,
-    name: 'John Smith',
-    role: 'web designer'
-  },
-  {
-    id: 1,
-    name: 'John Smith',
-    role: 'web designer'
-  },
-  {
-    id: 2,
-    name: 'John Smith',
-    role: 'web designer'
-  },
-  {
-    id: 3,
-    name: 'John Smith',
-    role: 'web designerwwwww'
-  },
-  {
-    id: 4,
-    name: 'John Smith',
-    role: 'web designer'
-  },
-  {
-    id: 5,
-    name: 'John Smith',
-    role: 'web designer'
-  }
-]
-
 const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export const getFullDate = (date: Date): string => {
+export const getFullDate = (strDate: string): string => {
+  const date = new Date(strDate);
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();

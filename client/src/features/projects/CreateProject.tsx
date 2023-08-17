@@ -1,21 +1,46 @@
 import { ChangeEvent, useState } from "react"
-import { people } from "./utils.project";
 import { AiFillMinusCircle } from "react-icons/ai";
+import customFetch from "../../lib/customFetch";
+import { toast } from "react-toastify";
+import { catchAxiosError } from "../../utils/utils";
+import { useNavigate, useParams } from "react-router-dom";
+import LoadingButton from "../../components/LoadingButton";
+
+/*
+- Optimise the update functionality
+*/
+
+type Member = {
+  id: string,
+  name: string,
+  role: string,
+}
+
+type Project = {
+  title: string,
+  description: string,
+  members: Member[],
+}
 
 const initialState = {
   title: '',
   description: '',
-  members: people,
+  members: [],
 }
+
 /*
-
-Add delete button for members
-
+- Check if the author is in the list on member addition using userContext
+- is_leader update functionality
 */
 
 export default function CreateProject() {
-  const [project, setProject] = useState(initialState);
+  const navigate = useNavigate();
+  const [project, setProject] = useState<Project>(initialState);
   const [memberID, setMemberID] = useState('');
+  const [memberLoading, setMemberLoading] = useState(false);
+  const [projectLoading, setProjectLoading] = useState(false);
+  const { id: projectID } = useParams();
+  const edit = Boolean(projectID);
 
   function handleProjectChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     if (e.target.name === 'members') {
@@ -29,30 +54,64 @@ export default function CreateProject() {
     });
   }
 
-  function addMember() {
-    const num: number = Number(memberID);
-    setMemberID('');
-    if (num > people.length || num < 1) {
-      console.log('Invalid memberID');
+  async function addMember() {
+    const exists = project.members.find(elem => {
+      return elem.id === memberID ? elem : null;
+    });
+    if (exists) {
+      toast.error('The user already exists');
       return;
     }
-    const person = people[num - 1];
-    person.id *= 10;
-    // check if it already exists
-    setProject(oldVal => {
-      return {
-        ...oldVal,
-        members: [...oldVal.members, person],
-      }
-    })
+    setMemberLoading(true);
+    try {
+      const result = await customFetch.get(`user/${memberID}`);
+      setProject(oldVal => {
+        return {
+          ...oldVal,
+          members: [...oldVal.members, {
+            name: result.data.user.username,
+            role: result.data.user.role,
+            id: result.data.user.user_id,
+          }]
+        }
+      });
+    } catch (err) {
+      catchAxiosError(err);
+    } finally {
+      setMemberLoading(false);
+    }
   }
 
-  function removeMember(memIdx: number) {
+  async function handleProjectAction() {
+    setProjectLoading(true);
+    try {
+      let newProject;
+      if (edit) {
+        newProject = await customFetch.patch(`/project/${projectID}`);
+      } else {
+        newProject = await customFetch.post('/project', project);
+      }
+      for (const member of project.members) {
+        await customFetch.post('registration', {
+          candidateID: member.id,
+          projectID: newProject.data.project.project_id,
+          // is_leader
+        });
+      }
+      navigate(`/projects/${newProject.data.project.project_id}`);
+    } catch (err) {
+      catchAxiosError(err);
+    } finally {
+      setProjectLoading(false);
+    }
+  }
+
+  function removeMember(memberID: string) {
     setProject(oldProject => {
       return {
         ...oldProject,
-        members: oldProject.members.filter((elem, idx) => {
-          if (idx !== memIdx) {
+        members: oldProject.members.filter(elem => {
+          if (elem.id !== memberID) {
             return elem;
           }
         })
@@ -79,8 +138,9 @@ export default function CreateProject() {
           <input value={memberID} id='addMem' onChange={(e) => setMemberID(e.target.value)}
             className='rounded-md border-solid border-gray-200 border-2 mb-5 focus:border-black' />
           <button onClick={addMember}
-            className='ml-4 px-3 py-2 border-blue-500 rounded-md border-solid'>
-            Add member
+            className='ml-4 border-blue-500 px-3 py-2 rounded-md border-solid'
+            disabled={memberLoading}>
+            {!memberLoading ? 'Add member' : 'Loading...'}
           </button>
         </div>
         <div>
@@ -88,17 +148,17 @@ export default function CreateProject() {
           <div>
             {
               project.members.length === 0
-              ? <h3>No other members</h3>
+              ? <h3>No members yet</h3>
               : <div className='grid grid-cols-1 border-gray-200 border rounded-lg mt-3 p-5 max-h-80 overflow-auto'>
                 {
-                  project.members.map((elem, idx) => {
+                  project.members.map(elem => {
                     return (
                       <div key={elem.id} className='mb-4 border-b-2 border-b-gray-200 flex justify-between'>
                         <div className='flex'>
                           <div>{elem.name}</div>
                           <div className='text-gray-400 mx-4'>{elem.role}</div>
                         </div>
-                        <button onClick={() => removeMember(idx)}>
+                        <button onClick={() => removeMember(elem.id)}>
                           <AiFillMinusCircle size={25} />
                         </button>
                       </div>
@@ -110,12 +170,19 @@ export default function CreateProject() {
           </div>
         </div>
         <div className='mt-8'>
-          <button className='mx-2 px-4 py-2 text-white bg-blue-500
-            rounded-xl font-bold border-blue-500 border-solid'>
-            Create
-          </button>
+          {
+            projectLoading
+            ? <LoadingButton text={edit ? 'Saving...' : 'Creating...'} />
+            : (
+              <button className='mx-2 px-4 py-2 text-white bg-blue-500
+                rounded-xl font-bold border-blue-500 border-solid'
+                onClick={handleProjectAction}>
+                { edit ? 'Edit' : 'Create' }
+              </button>
+            )
+          }
           <button className='px-4 py-2 text-blue-500 bg-white border-blue-500 
-            border-solid rounded-xl font-bold'>
+            border-solid rounded-xl font-bold' onClick={() => navigate(-1)}>
             Cancel
           </button>
         </div>

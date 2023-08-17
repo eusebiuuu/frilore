@@ -21,13 +21,13 @@ const getAssignments = async (req, res) => {
 const createAssignment = async (req, res) => {
   // auth
   const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
-  const { taskID, assignmentType } = req.body;
+  const { taskID, assignmentType, newUserID } = req.body;
   const matchingTask = await getSingleEntity(taskID, 'task', 'task_id');
   const listID = matchingTask.rows[0].list;
   const matchingList = await getSingleEntity(listID, 'list', 'list_id');
   const projectID = matchingList.rows[0].project;
   await checkPermissions(userID, projectID, true);
-  const newAssignment = await pool.query(createAssignmentQuery, [taskID, userID, assignmentType]);
+  const newAssignment = await pool.query(createAssignmentQuery, [taskID, newUserID, assignmentType]);
   return res.status(StatusCodes.CREATED).json({
     assignment: newAssignment.rows[0],
   });

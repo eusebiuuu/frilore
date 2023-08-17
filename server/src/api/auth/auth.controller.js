@@ -2,10 +2,14 @@ import { StatusCodes } from "http-status-codes";
 import pool from "../../services/database.js";
 import { addUser, checkEmail } from "./auth.queries.js";
 import CustomAPIError from "../../utils.js";
+import { getSingleEntity } from "../utils.api.js";
 
 const getCurrentUser = async (req, res) => {
+  // auth
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const user = await getSingleEntity(userID, 'user_table', 'user_id');
   return res.status(StatusCodes.OK).json({
-    data: 'Get Auth'
+    user: user.rows[0],
   });
 }
 

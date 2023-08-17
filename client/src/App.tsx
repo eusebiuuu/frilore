@@ -14,13 +14,23 @@ import Home from "./features/home/Home"
 import CreateProject from "./features/projects/CreateProject"
 import Chat from "./features/chat/Chat"
 import Dashboard from "./features/dashboard/Dashboard"
-
-/*
-- Lazy import
-*/
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  return (
+  return (<div>
+    <ToastContainer
+      position="bottom-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
     <Router>
       <Navbar />
       <div className="flex max-w-full">
@@ -34,15 +44,16 @@ function App() {
           <Route path='projects' element={<Projects />} />
           <Route path='projects/:id' element={<SingleProject />} />
           <Route path='tasks' element={<AssignedTasks />} />
-          <Route path='profile' element={<ForeignProfile />} />
-          <Route path='profile/personal' element={<PersonalProfile />} />
+          <Route path='profile' element={<PersonalProfile />} />
+          <Route path='profile/:id' element={<ForeignProfile />} />
           <Route path='create-project' element={<CreateProject />} />
+          <Route path='create-project/:id' element={<CreateProject />} />
           <Route path='chat' element={<Chat />} />
         </Routes>
       </div>
       <Footer />
     </Router>
-  )
+  </div>)
 }
 
 export default App

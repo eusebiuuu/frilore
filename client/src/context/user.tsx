@@ -2,7 +2,7 @@ import { createContext, useState, ReactNode, useContext } from "react";
 
 export type User = {
   isSidebarOpen: boolean,
-  onSidebarToggle: (val: boolean) => void
+  onSidebarToggle: (val: boolean) => void,
 }
 
 type UserContextProps = {
@@ -11,7 +11,7 @@ type UserContextProps = {
 
 const defaultState = {
   isSidebarOpen: false,
-  onSidebarToggle: (val: boolean) => { val }
+  onSidebarToggle: (val: boolean) => { val },
 }
 
 const UserContext = createContext(defaultState);

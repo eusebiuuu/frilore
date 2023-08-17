@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 
 /*
-- Login & Register when user us undefined
+- login, register, open mobile sidebar etc. when user is undefined
 - Notifications: modal, FB model, types of notifications, last 10 notifications
 */
 export default function Navbar() {

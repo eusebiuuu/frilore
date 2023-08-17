@@ -1,41 +1,61 @@
 
-export const projects = [
-  {
-    id: 0,
-    title: 'Project One',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, leo et viverra pharetra',
-    assignedTasks: 13,
-    members: [1, 1, 1, 1, 1, 1]
-  },
-  {
-    id: 1,
-    title: 'Project Two',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, leo et viverra pharetra',
-    assignedTasks: 19,
-    members: [1, 1, 1, 1, 1, 1]
-  },
-  {
-    id: 2,
-    title: 'Project Three',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, leo et viverra pharetra',
-    assignedTasks: 29,
-    members: [1, 1, 1, 1, 1, 1]
-  },
-  {
-    id: 3,
-    title: 'Project Four',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, leo et viverra pharetra',
-    assignedTasks: 22,
-    members: [1, 1, 1, 1, 1, 1]
-  },
-  {
-    id: 4,
-    title: 'Project Five',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, leo et viverra pharetra',
-    assignedTasks: 22,
-    members: [1, 1, 1, 1, 1, 1]
-  },
-];
+export type ModalData = {
+  content: string,
+  text: string,
+  action: () => Promise<unknown>,
+  open: boolean,
+}
+
+export type Assignment = {
+  assignment_id: string,
+  user_id: string,
+  type: 'assignee' | 'reporter',
+  username: string,
+}
+
+export type Task = {
+  task_id: string,
+  name: string,
+  description: string,
+  priority: 'low' | 'high',
+  status: 'to do' | 'pending' | 'completed',
+  deadline: string,
+  assignments: Assignment[],
+  open?: boolean,
+}
+
+type List = {
+  list_id: string,
+  title: string,
+  tasks: Task[]
+}
+
+export type Member = {
+  member_id: string,
+  username: string,
+  role: string,
+}
+
+export type CompleteProject = {
+  project_id: string,
+  name: string,
+  description: string,
+  last_updates: string[],
+  members: Member[],
+  lists: List[],
+}
+
+export type ProjectsWithMembers = {
+  project_id: string,
+  description: string | '',
+  name: string,
+  lastUpdates: string[],
+  created_at?: string,
+  members: {
+    member_id: string,
+    username: string,
+  }[]
+}[];
 
 export const lastUpdates = [
   {
@@ -118,37 +138,4 @@ export const tasks = [
     days: 12,
     description: 'Food design is required for our new project let\'s research the best practices.'
   },
-]
-
-export const people = [
-  {
-    id: 0,
-    name: 'John Smith1',
-    role: 'web designer'
-  },
-  {
-    id: 1,
-    name: 'John Smith2',
-    role: 'web designer'
-  },
-  {
-    id: 2,
-    name: 'John Smith3',
-    role: 'web designer'
-  },
-  {
-    id: 3,
-    name: 'John Smith4',
-    role: 'web designerwwwww'
-  },
-  {
-    id: 4,
-    name: 'John Smith5',
-    role: 'web designer'
-  },
-  {
-    id: 5,
-    name: 'John Smith6',
-    role: 'web designer'
-  }
 ]
