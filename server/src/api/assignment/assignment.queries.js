@@ -3,3 +3,5 @@ export const createAssignmentQuery = `INSERT INTO assignment (task, user_id, typ
 export const getAssignmentsQuery = `SELECT * FROM assignment WHERE task = $1`;
 
 export const deleteAssignmentQuery = `DELETE FROM assignment WHERE assignment_id = $1`;
+
+export const deleteAllAssignmentsQuery = `DELETE FROM assignment WHERE task = $1`;

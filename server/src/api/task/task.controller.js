@@ -1,22 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../../services/database.js";
 import CustomAPIError from "../../utils.js";
-import { checkPermissions, getSingleEntity } from "../utils.api.js";
-import { createTaskQuery, deleteTaskQuery, getTaskQuery, getTasksQuery, updateTaskQuery } from "./task.queries.js";
-
-const getTasks = async (req, res) => {
-  // auth
-  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
-  // const userID = '52e689e2-7936-4a3f-a659-dd2c295a4889';
-  const { listID } = req.body;
-  const matchingList = await getSingleEntity(listID, 'list', 'list_id');
-  const projectID = matchingList.rows[0].project;
-  await checkPermissions(userID, projectID, false);
-  const tasks = await pool.query(getTasksQuery, [listID]);
-  return res.status(StatusCodes.OK).json({
-    tasks: tasks.rows
-  });
-}
+import { checkPermissions, deleteAllAssignments, getSingleEntity } from "../utils.api.js";
+import { createTaskQuery, deleteTaskQuery, getAssignedTasksQuery, getTaskQuery, updateTaskQuery } from "./task.queries.js";
 
 const createTask = async (req, res) => {
   // auth
@@ -27,6 +13,7 @@ const createTask = async (req, res) => {
   const projectID = matchingList.rows[0].project;
   await checkPermissions(userID, projectID, true);
   const newTask = await pool.query(createTaskQuery, [name, description, status, deadline, priority, listID]);
+  await deleteAllAssignments(newTask.rows[0].task_id);
   return res.status(StatusCodes.OK).json({
     task: newTask.rows[0],
   });
@@ -55,8 +42,19 @@ const editTask = async (req, res) => {
     updateTaskQuery,
     [newName, newDescription, newDeadline, newListID, newPriority, newStatus, taskID]
   );
+  await deleteAllAssignments(newTask.rows[0].task_id);
   return res.status(StatusCodes.OK).json({
     task: newTask.rows[0],
+  });
+}
+
+const getAllAssignedTasks = async (req, res) => {
+  // auth
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  // const userID = '52e689e2-7936-4a3f-a659-dd2c295a4889';
+  const tasks = await pool.query(getAssignedTasksQuery, [userID]);
+  return res.status(StatusCodes.OK).json({
+    tasks: tasks.rows,
   });
 }
 
@@ -80,5 +78,5 @@ export default {
   createTask,
   editTask,
   deleteTask,
-  getTasks
+  getAllAssignedTasks,
 }

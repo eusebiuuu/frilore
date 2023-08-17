@@ -3,6 +3,10 @@ import logo from '../assets/logo.svg'
 import { GrClose } from 'react-icons/gr'
 import { useUserContext } from "../context/user";
 
+/*
+- hide on undefined user
+*/
+
 export default function MobileSidebar() {
   const { isSidebarOpen, onSidebarToggle } = useUserContext();
   return (

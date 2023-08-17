@@ -1,26 +1,34 @@
 
-export const projects = [
-  {
-    id: 0,
-    title: 'Project One',
-    tasks: 20,
-  },
-  {
-    id: 1,
-    title: 'Project Two',
-    tasks: 20,
-  },
-  {
-    id: 2,
-    title: 'Project Three',
-    tasks: 20,
-  },
-  {
-    id: 3,
-    title: 'Project Four',
-    tasks: 20,
+export function getAge(birthday: string | undefined | null) {
+  if (!birthday) {
+    return 'Unspecified age';
   }
-]
+  const birthYear = parseInt(birthday.slice(0, 4), 10);
+  const birthMonth = parseInt(birthday.slice(5, 7), 10);
+  const birthDay = parseInt(birthday.slice(8), 10);
+  const curYear = new Date().getFullYear();
+  const curMonth = new Date().getMonth() + 1;
+  const curDay = new Date().getDate();
+  let age = curYear - birthYear;
+  age -= curMonth > birthMonth || (curMonth === birthMonth && curDay > birthDay) ? 1 : 0;
+  return `${age} years old`
+}
+
+export type Projects = {
+  project_id: string,
+  description: string | '',
+  name: string,
+  lastUpdates: string[],
+}[];
+
+export type User = {
+  username: string,
+  real_name: string,
+  email: string,
+  role: string,
+  country: string,
+  birthday: string | null | undefined,
+}
 
 export type SelectMenuOption = typeof COUNTRIES[number]
 

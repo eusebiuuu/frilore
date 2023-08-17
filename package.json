@@ -4,7 +4,9 @@
   "description": "A project management tool to improve productivity in a team",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run dev --prefix server & npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm run start --prefix server"
   },
   "repository": {
     "type": "git",

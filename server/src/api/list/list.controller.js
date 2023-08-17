@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { checkPermissions } from "../utils.api.js";
 import pool from "../../services/database.js";
-import { createListQuery, deleteListQuery, getAllListsQuery, getSingleListQuery } from "./list.queries.js";
+import { createListQuery, deleteAllTasksQuery, deleteListQuery, getAllListsQuery, getSingleListQuery } from "./list.queries.js";
 import CustomAPIError from "../../utils.js";
 
 const getLists = async (req, res) => {
@@ -26,6 +26,17 @@ const createList = async (req, res) => {
   });
 }
 
+const deleteAllTasks = async (req, res) => {
+  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const { projectID } = req.body;
+  const { id: listID } = req.params;
+  await checkPermissions(userID, projectID, true);
+  await pool.query(deleteAllTasksQuery, [listID]);
+  return res.status(StatusCodes.OK).json({
+    msg: 'Tasks deleted successfully'
+  });
+}
+
 const deleteList = async (req, res) => {
   // auth
   const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
@@ -45,5 +56,6 @@ const deleteList = async (req, res) => {
 export default {
   createList,
   deleteList,
-  getLists
+  getLists,
+  deleteAllTasks,
 }

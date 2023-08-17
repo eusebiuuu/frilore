@@ -1,16 +1,17 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../services/database.js";
 import CustomAPIError from "../utils.js";
-import { getSingleProject } from "./project/project.queries.js";
-import { getSingleRegistration } from "./registration/registration.queries.js";
+import { getJoinedProjectQuery } from "./project/project.queries.js";
+import { getSingleRegistrationQuery } from "./registration/registration.queries.js";
+import { deleteAllAssignmentsQuery } from "./assignment/assignment.queries.js";
 
 export const checkPermissions = async (userID, projectID, mustBeLeader) => {
-  const singleProject = await pool.query(getSingleProject, [userID, projectID]);
+  const singleProject = await pool.query(getJoinedProjectQuery, [userID, projectID]);
   if (singleProject.rowCount !== 1) {
     throw new CustomAPIError('Project not found in your projects list', StatusCodes.BAD_REQUEST);
   }
   if (mustBeLeader) {
-    const registration = await pool.query(getSingleRegistration, [projectID, userID]);
+    const registration = await pool.query(getSingleRegistrationQuery, [projectID, userID]);
     if (!registration.rows[0].is_leader) {
       throw new CustomAPIError(
         'Permission denied. You have to be one of the project leaders to do this operation',
@@ -18,7 +19,6 @@ export const checkPermissions = async (userID, projectID, mustBeLeader) => {
       );
     }
   }
-  return singleProject.rows[0];
 }
 
 export const getSingleEntity = async (entityID, entityTableName, entityIDName) => {
@@ -30,4 +30,8 @@ export const getSingleEntity = async (entityID, entityTableName, entityIDName) =
     throw new CustomAPIError(`${entityTableName} not found`, StatusCodes.BAD_REQUEST);
   }
   return matchingEntity;
+}
+
+export const deleteAllAssignments = async (taskID) => {
+  await pool.query(deleteAllAssignmentsQuery, [taskID]);
 }
