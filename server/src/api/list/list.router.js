@@ -5,7 +5,7 @@ const listRouter = Router();
 
 listRouter.get('/', listController.getLists);
 listRouter.post('/', listController.createList);
-listRouter.delete('/tasks/:id', listController.deleteAllTasks);
+listRouter.delete('/tasks/:list/:project', listController.deleteAllTasks);
 listRouter.delete('/:id', listController.deleteList);
 
 export default listRouter;

@@ -1,12 +1,14 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import ModalWrapper from "../../components/ModalWrapper";
 import { Member, Task } from "../projects/utils.project";
-import { TaskMember } from "./utils.tasks";
+import { TaskMember, prepareForObjectState } from "./utils.tasks";
 import TaskAssignments from "./TaskAssignments";
 import Loader from "../../components/Loader";
 import customFetch from "../../lib/customFetch";
 import { catchAxiosError } from "../../utils/utils";
 import LoadingButton from "../../components/LoadingButton";
+import { getStates } from "../../utils/getObjectsStates";
+import { notificationsSocket } from "../../socket";
 
 type CreateTaskModalProps = {
   onModalClose: () => void,
@@ -14,6 +16,7 @@ type CreateTaskModalProps = {
   task?: Task,
   members: Member[],
   listID: string,
+  projectTitle: string,
 }
 
 const initialState: Task = {
@@ -29,10 +32,11 @@ const initialState: Task = {
 export default function CreateTaskModal(props: CreateTaskModalProps) {
   const [task, setTask] = useState<Task>(props.task || initialState);
   const [loading, setLoading] = useState(false);
-  const [taskMembers, setTaskMembers] = useState<TaskMember[] | undefined>();
+  const [taskMembers, setTaskMembers] = useState<TaskMember[] | []>([]);
+  const [initialTaskMembers, setInitialTaskMembers] = useState<TaskMember[] | []>([]);
 
   useEffect(() => {
-    setTaskMembers(props.members.map(member => {
+    const newMembers: TaskMember[] = props.members.map(member => {
       const memberInfo = task.assignments.find(elem => {
         if (elem.user_id === member.member_id) {
           return elem;
@@ -44,7 +48,9 @@ export default function CreateTaskModal(props: CreateTaskModalProps) {
         username: member.username,
         role: member.role,
       }
-    }))
+    });
+    setTaskMembers(newMembers);
+    setInitialTaskMembers(newMembers);
   }, []);
 
   function handleTaskChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
@@ -59,27 +65,39 @@ export default function CreateTaskModal(props: CreateTaskModalProps) {
   async function handleButtonClick() {
     setLoading(true);
     try {
-      let newTask;
+      let currTask;
       if (props.type === 'create') {
-        newTask = await customFetch.post('/task', {
+        currTask = await customFetch.post('/task', {
           listID: props.listID,
           ...task,
         });
       } else {
-        newTask = await customFetch.patch(`/task/${task.task_id}`, {
+        currTask = await customFetch.patch(`/task/${task.task_id}`, {
           listID: props.listID,
           ...task,
         });
       }
-      if (taskMembers) {
-        for (const member of taskMembers) {
-          if (member.type === 'none') continue;
-          await customFetch.post(`/assignment`, {
-            taskID: newTask.data.task.task_id,
-            assignmentType: member.type,
-            newUserID: member.user_id
-          });
-        }
+      const membersState = getStates(prepareForObjectState(initialTaskMembers), prepareForObjectState(taskMembers));
+      // console.log(membersState);
+      for (const member of membersState.delete as TaskMember[]) {
+        notificationsSocket.emit('delete-assignment', task.name, props.projectTitle, member.user_id);
+        await customFetch.delete(`/assignment/${member.user_id}/${currTask.data.task.task_id}`);
+      }
+      for (const member of membersState.create as TaskMember[]) {
+        notificationsSocket.emit('create-assignment', task.name, props.projectTitle, member.user_id);
+        await customFetch.post(`/assignment`, {
+          newUserID: member.user_id,
+          taskID: currTask.data.task.task_id,
+          assignmentType: member.type,
+        });
+      }
+      for (const member of membersState.update as TaskMember[]) {
+        notificationsSocket.emit('update-assignment', task.name, props.projectTitle, member.user_id);
+        await customFetch.patch(`/assignment`, {
+          currUserID: member.user_id,
+          taskID: task.task_id,
+          assignmentType: member.type,
+        });
       }
     } catch (err) {
       catchAxiosError(err);
@@ -91,9 +109,6 @@ export default function CreateTaskModal(props: CreateTaskModalProps) {
 
   function handleTaskMembersChange(idx: number, type: 'assignee' | 'reporter' | 'none') {
     setTaskMembers(oldVal => {
-      if (typeof oldVal === 'undefined') {
-        return undefined;
-      }
       return oldVal.map((elem, currIdx) => {
         if (currIdx !== idx) {
           return elem;

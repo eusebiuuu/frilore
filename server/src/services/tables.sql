@@ -1,20 +1,25 @@
 CREATE TABLE user_table (
   user_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  username VARCHAR(20) NOT NULL UNIQUE,
-  real_name VARCHAR(20) NOT NULL,
-  email VARCHAR(50) NOT NULL UNIQUE, -- add constraint
-  country VARCHAR(30) NOT NULL,
-  role VARCHAR(30) NOT NULL,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(1000) NOT NULL DEFAULT '',
+  real_name VARCHAR(20) NOT NULL DEFAULT '',
+  email VARCHAR(100) UNIQUE CONSTRAINT email_validation CHECK (email ~ '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'),
+  country VARCHAR(50) NOT NULL DEFAULT 'Romania',
+  role VARCHAR(30) NOT NULL DEFAULT '',
   birthday DATE,
-  description VARCHAR(500) NOT NULL,
-  is_verified BOOLEAN DEFAULT TRUE
+  image_public_id VARCHAR(200),
+  image_url VARCHAR(300) NOT NULL DEFAULT 'https://res.cloudinary.com/dwgihvjqj/image/upload/v1692532441/frilore/abstract-user-flat-4_pl9jts.png',
+  google_id VARCHAR(100) UNIQUE,
+  github_id VARCHAR(100) UNIQUE,
+  description VARCHAR(500) NOT NULL DEFAULT '',
+  last_login TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE project (
   project_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name VARCHAR(30) NOT NULL,
   description VARCHAR(300) NOT NULL,
-  last_updates VARCHAR(100)[] NOT NULL,
+  chat_id SERIAL UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -29,7 +34,7 @@ ALTER TABLE registration ADD CONSTRAINT UQ_registration UNIQUE(project_id, user_
 CREATE TABLE message (
   message_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   author UUID NOT NULL REFERENCES user_table(user_id) ON DELETE CASCADE,
-  chat_id UUID NOT NULL REFERENCES project(project_id) ON DELETE CASCADE,
+  chat SERIAL NOT NULL REFERENCES project(chat_id) ON DELETE CASCADE,
   content VARCHAR(500) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -47,7 +52,7 @@ CREATE TABLE task (
   priority VARCHAR(30) CONSTRAINT priority_constraint CHECK (priority = 'low' OR priority = 'high'),
   status VARCHAR(30) CONSTRAINT status_constraint CHECK 
     (status = 'pending' OR status = 'completed' OR status = 'to do'),
-  deadline DATE NOT NULL,
+  deadline VARCHAR(20) NOT NULL DEFAULT '2023-04-02',
   list UUID REFERENCES list(list_id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -62,8 +67,8 @@ ALTER TABLE assignment ADD CONSTRAINT UQ_assignment UNIQUE(task, user_id);
 
 CREATE TABLE notification (
   notification_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  author UUID REFERENCES user_table(user_id) ON DELETE CASCADE,
-  description VARCHAR(100) NOT NULL,
-  type VARCHAR(50) CONSTRAINT notif_type_constr CHECK ()
+  user_id UUID REFERENCES user_table(user_id) ON DELETE CASCADE,
+  content VARCHAR(100) NOT NULL,
+  seen BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

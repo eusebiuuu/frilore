@@ -1,55 +1,49 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../../services/database.js";
-import { addUser, checkEmail } from "./auth.queries.js";
+import { checkUsernameDuplicationQuery, createUserQuery } from "./auth.queries.js";
 import CustomAPIError from "../../utils.js";
 import { getSingleEntity } from "../utils.api.js";
+import bcrypt from 'bcrypt';
 
 const getCurrentUser = async (req, res) => {
-  // auth
-  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  if (!req.user) {
+    return res.status(StatusCodes.NO_CONTENT);
+  }
+  const userID = req.user.user_id;
   const user = await getSingleEntity(userID, 'user_table', 'user_id');
   return res.status(StatusCodes.OK).json({
     user: user.rows[0],
   });
 }
 
-const isValidEmail = async (req, res) => {
-  const { email } = req.body;
-  const sameEmail = await pool.query(checkEmail, [email]);
-  // console.log(sameEmail.rows);
-  if (sameEmail.rows.length > 0) {
-    throw new CustomAPIError('Email already exists', StatusCodes.BAD_REQUEST);
+const register = async (req, res, next) => {
+  const { username, password } = req.body;
+  const existingUser = await pool.query(checkUsernameDuplicationQuery, [username]);
+  if (existingUser.rowCount > 0) {
+    throw new CustomAPIError('Username already exists. Please choose another one', StatusCodes.BAD_REQUEST);
   }
-  return res.status(StatusCodes.OK).json({
-    good: true,
-  });
-}
-
-const register = async (req, res) => {
-  const { role, username, realName, email, country } = req.body;
-  const result = await pool.query(addUser, [username, realName, email, country, role]);
-  // console.log(result.rows);
-  return res.status(StatusCodes.CREATED).json({
-    user: result.rows,
-  });
-}
-
-const login = async (req, res) => {
-  return res.status(StatusCodes.OK).json({
-    data: 'Create Auth'
-  });
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  await pool.query(createUserQuery, [username, hashedPassword]);
+  next();
 }
 
 const logout = async (req, res) => {
-  return res.status(StatusCodes.OK).json({
-    data: 'Delete Auth'
-  });
+  req.logout();
+  res.redirect('/');
+}
+
+const githubAuth = async (req, res) => {
+  req.session.user_id = req.user.user_id;
+}
+
+const googleAuth = async (req, res) => {
+  req.session.user_id = req.user.user_id;
 }
 
 export default {
   getCurrentUser,
   register,
-  login,
   logout,
-  isValidEmail
+  githubAuth,
+  googleAuth,
 }

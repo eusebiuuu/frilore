@@ -10,11 +10,6 @@ import { Task } from "../projects/utils.project";
 import { catchAxiosError } from "../../utils/utils";
 import Loader from "../../components/Loader";
 
-/*
-- Filter by reporter or assignee
-- Sorting (2) (back-end / front-end)
-- Add more
-*/
 const initialState: Task[] = [{
   task_id: '',
   name: '',

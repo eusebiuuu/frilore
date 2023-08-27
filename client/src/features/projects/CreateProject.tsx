@@ -6,10 +6,6 @@ import { catchAxiosError } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingButton from "../../components/LoadingButton";
 
-/*
-- Optimise the update functionality
-*/
-
 type Member = {
   id: string,
   name: string,
@@ -27,11 +23,6 @@ const initialState = {
   description: '',
   members: [],
 }
-
-/*
-- Check if the author is in the list on member addition using userContext
-- is_leader update functionality
-*/
 
 export default function CreateProject() {
   const navigate = useNavigate();

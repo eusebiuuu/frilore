@@ -7,17 +7,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import customFetch from "../../lib/customFetch";
 import { catchAxiosError } from "../../utils/utils";
 import Loader from "../../components/Loader";
-import { nanoid } from "nanoid";
 import ButtonsDropdown from "../../components/ButtonsDropdown";
 import Lists from "./Lists";
 import Modal from "../../components/Modal";
 import ListModal from "./ListModal";
 import { getProjectDropdown } from "./dropdown-logic";
 import CreateTaskModal from "../tasks/CreateTaskModal";
-
-/*
-- drag and drops (https://github.com/atlassian/react-beautiful-dnd) (this could make the difference)
-*/
 
 const initialState = {
   content: '',
@@ -44,7 +39,6 @@ const initialStateTask: ITaskData = {
 }
 
 export default function SingleProject() {
-  const [showUpdates, setShowUpdates] = useState(false);
   const [members, setMembers] = useState(false);
   const { id: projectID } = useParams();
   const [project, setProject] = useState<CompleteProject>();
@@ -137,11 +131,11 @@ export default function SingleProject() {
             onModalClose={() => handleModalChange(false)} 
             rightContent={modalData.text} rightAction={modalData.action} /> }
           { listModal && <ListModal action={handleListCreate} onModalClose={() => handleListModalChange(false)} />}
-          {taskModalData.open && <CreateTaskModal onModalClose={handleTaskModalClose}
+          {taskModalData.open && <CreateTaskModal onModalClose={handleTaskModalClose} projectTitle={project?.name || ''}
             type={taskModalData.action} task={taskModalData} members={project?.members || []}
             listID={taskModalData.listID}
           />}
-          <div className='flex justify-between'>
+          <div>
             <div className='relative'>
               <button className='bg-primary px-4 py-2 relative' onClick={() => setMembers(true)}>
                 View all members
@@ -169,25 +163,6 @@ export default function SingleProject() {
                   })
                 }
               </div>
-            </div>
-            <button className={`bg-primary py-2 px-4`} onClick={() => setShowUpdates(true)}>Last updates</button>
-            <div className={`fixed bg-black opacity-50 top-0 z-40 left-0 
-              w-screen h-screen ${!showUpdates ? 'hidden' : 'block'}`}></div>
-            <div className={`w-80 bg-white fixed transition-all z-40 top-0 h-full overflow-auto
-              right-0 ${showUpdates ? 'translate-x-0' : 'translate-x-full'}`}>
-              <ul className='py-4 px-2 list-disc marker:text-red-800 list-inside'>
-                <div className="flex justify-between mb-4">
-                  <h3 className=''>Last updates</h3>
-                  <button onClick={() => setShowUpdates(false)}>
-                    <GrClose size={25} className='hover:scale-125 transition-all' />
-                  </button>
-                </div>
-                {
-                  project?.last_updates.map(elem => {
-                    return <li key={nanoid()} className='my-3 text-sm'>{elem}</li>
-                  })
-                }
-              </ul>
             </div>
           </div>
           <div className='my-6'>

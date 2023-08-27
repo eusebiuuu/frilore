@@ -1,3 +1,4 @@
+import { ObjType } from "../../utils/getObjectsStates";
 
 export const getDaysAgo = (curDate: Date): number => {
   const oldMilisec = curDate.getMilliseconds();
@@ -6,6 +7,17 @@ export const getDaysAgo = (curDate: Date): number => {
   const oneDay = 1000 * 60 * 60 * 24;
   const days = Math.ceil(diff / oneDay);
   return days;
+}
+
+export function prepareForObjectState(arr: TaskMember[]): ObjType[] {
+  return arr.map(elem => {
+    if (elem.type !== 'none') {
+      return {
+        id: elem.user_id,
+        body: elem,
+      }
+    }
+  }).filter(elem => elem !== undefined) as unknown as ObjType[];
 }
 
 export type Colour = 'red' | 'orange' | 'green';
