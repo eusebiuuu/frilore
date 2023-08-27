@@ -9,9 +9,3 @@ export function catchAxiosError(err: unknown) {
     console.error(err);
   }
 }
-
-// export function makeRequest(link: string, type: 'get' | 'post' body?: Object) {
-//   try {
-//     const result = await customFetch[]
-//   }
-// }

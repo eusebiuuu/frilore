@@ -1,3 +1,6 @@
+# Dummy data
+/src/data
+
 # Logs
 logs
 *.log

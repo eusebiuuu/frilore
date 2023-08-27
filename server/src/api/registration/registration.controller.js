@@ -5,8 +5,7 @@ import CustomAPIError from "../../utils.js";
 import { checkPermissions, getSingleEntity } from "../utils.api.js";
 
 const getRegistrations = async (req, res) => {
-  // auth
-  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const userID = req.user.user_id;
   const { projectID } = req.body;
   await checkPermissions(userID, projectID, false);
   const allRegistrations = await pool.query(getAllRegistrations, [projectID]);
@@ -16,9 +15,7 @@ const getRegistrations = async (req, res) => {
 }
 
 const getSingleRegistration = async (req, res) => {
-  // auth
-  // const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
-  const userID = '52e689e2-7936-4a3f-a659-dd2c295a4889';
+  const userID = req.user.user_id;
   const { id: projectID } = req.params;
   await checkPermissions(userID, projectID, false);
   const matchingRegistration = await pool.query(getSingleRegistrationQuery, [projectID, userID]);
@@ -28,8 +25,7 @@ const getSingleRegistration = async (req, res) => {
 }
 
 const createRegistration = async (req, res) => {
-  // auth
-  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
+  const userID = req.user.user_id;
   const { candidateID, projectID } = req.body;
   await checkPermissions(userID, projectID, true);
   const existingRegistration = await pool.query(duplicateRegistration, [projectID, candidateID]);
@@ -43,10 +39,7 @@ const createRegistration = async (req, res) => {
 }
 
 const editRegistration = async (req, res) => {
-  // auth
-  const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
-  // const userID = '52e689e2-7936-4a3f-a659-dd2c295a4889';
-  // const userID = '4e0f33ff-c6dc-4027-9dce-23bfe9888edf';
+  const userID = req.user.user_id;
   const { id: registrationID } = req.params;
   const { is_leader } = req.body;
   const matchingRegistration = await getSingleEntity(registrationID, 'registration', 'registration_id');
@@ -63,9 +56,7 @@ const editRegistration = async (req, res) => {
 }
 
 const deleteRegistration = async (req, res) => {
-  // auth
-  // const userID = '181cc5d2-b164-4e51-a78a-6acd0b2e9af1';
-  const userID = '52e689e2-7936-4a3f-a659-dd2c295a4889';
+  const userID = req.user.user_id;
   const { id: registrationID } = req.params;
   const matchingRegistration = await getSingleEntity(registrationID, 'registration', 'registration_id');
   const isOwnRegistration = matchingRegistration.rows[0].user_id === userID;

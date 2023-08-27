@@ -40,7 +40,6 @@ export type CompleteProject = {
   project_id: string,
   name: string,
   description: string,
-  last_updates: string[],
   members: Member[],
   lists: List[],
 }

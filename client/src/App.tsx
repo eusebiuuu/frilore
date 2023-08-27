@@ -12,10 +12,10 @@ import Register from "./features/authentication/Register"
 import Login from "./features/authentication/Login"
 import Home from "./features/home/Home"
 import CreateProject from "./features/projects/CreateProject"
-import Chat from "./features/chat/Chat"
 import Dashboard from "./features/dashboard/Dashboard"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
+import Groups from "./features/chat/Groups"
 
 function App() {
   return (<div>
@@ -48,7 +48,7 @@ function App() {
           <Route path='profile/:id' element={<ForeignProfile />} />
           <Route path='create-project' element={<CreateProject />} />
           <Route path='create-project/:id' element={<CreateProject />} />
-          <Route path='chat' element={<Chat />} />
+          <Route path='chat' element={<Groups />} />
         </Routes>
       </div>
       <Footer />

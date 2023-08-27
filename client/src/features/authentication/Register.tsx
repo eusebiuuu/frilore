@@ -1,10 +1,6 @@
 import { AiFillGithub, AiOutlineGoogle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
-/*
-- Add a more detailed form after email validation
-*/
-
 export default function Register() {
   const tailwindClasses = 'w-96 block px-4 py-3 my-4 bg-white rounded-2xl m-auto font-semibold text-lg hover:shadow-md';
   return (

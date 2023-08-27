@@ -9,10 +9,6 @@ type MembersProps = {
 
 const SHOW_NUM = 5;
 
-/*
-  - show users' image
-*/
-
 export default function Members(props: MembersProps) {
   const { members } = props;
   const end = Math.min(SHOW_NUM, members.length);

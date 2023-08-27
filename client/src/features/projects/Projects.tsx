@@ -7,9 +7,6 @@ import { catchAxiosError } from "../../utils/utils";
 import { ProjectsWithMembers } from "../projects/utils.project";
 import Loader from "../../components/Loader";
 
-// replace the project db table to be able to sort projects properly
-// add pagination
-
 export default function Projects() {
   const [criteria, setCriteria] = useState('oldest first');
   const [loading, setLoading] = useState(true);

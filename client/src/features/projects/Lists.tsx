@@ -20,11 +20,11 @@ type Props = {
 export default function Lists(props: Props) {
   const { project } = props;
   const [listDropdowns, setListDropdowns] = useState(Array.from(
-    project && project.lists ? project.lists.map(() => false) : []
+    project ? project.lists.map(() => false) : []
   ));
   const [taskDropdowns, setTaskDropdowns] = useState<boolean[][]>(
-    Array.from(project && project.lists ? project.lists.map(elem => {
-      return Array.from(elem.tasks ? elem.tasks.map(_ => false) : [])
+    Array.from(project ? project.lists.map(elem => {
+      return Array.from(elem.tasks.map(_ => false))
     }) : [])
   );
 
@@ -60,7 +60,7 @@ export default function Lists(props: Props) {
   
   async function handleAllTasksDelete(listID: string) {
     try {
-      await customFetch.delete(`/list/tasks/${listID}`);
+      await customFetch.delete(`/list/tasks/${listID}/${project?.project_id}`);
     } catch (err) {
       catchAxiosError(err);
     }
@@ -77,6 +77,7 @@ export default function Lists(props: Props) {
   }
 
   function handleTaskModalUpdate(task: Task, listID: string) {
+    // console.log(task);
     props.setTaskModalData({
       open: true,
       ...task,
@@ -130,6 +131,7 @@ export default function Lists(props: Props) {
                 <div className='grid grid-cols-1'>
                   { elem.tasks
                     ? elem.tasks.map((taskElem, taskIdx) => {
+                      // console.log(taskElem.assignments);
                       return <div key={taskElem.task_id} className='p-4 rounded-2xl border-2 shadow-sm mt-4'>
                         <div className='flex justify-between'>
                           <div className='font-bold'>{taskElem.name}</div>

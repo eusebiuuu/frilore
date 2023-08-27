@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { TaskMember } from "./utils.tasks";
 
-/*
-- add checkbox label
-*/
-
 type Props = {
   members: TaskMember[],
   title: string,
