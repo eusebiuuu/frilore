@@ -17,6 +17,7 @@ export type Assignment = {
   user_id: string,
   type: 'assignee' | 'reporter',
   username: string,
+  image_url: string,
 }
 
 export type Task = {
@@ -40,6 +41,7 @@ export type Member = {
   member_id: string,
   username: string,
   role: string,
+  image_url: string,
 }
 
 export type CompleteProject = {
@@ -59,6 +61,7 @@ export type ProjectsWithMembers = {
   members: {
     member_id: string,
     username: string,
+    image_url: string,
   }[]
 }[];
 

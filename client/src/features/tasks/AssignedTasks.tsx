@@ -173,6 +173,7 @@ export default function AssignedTasks() {
                             return {
                               member_id: elem.user_id,
                               username: elem.username,
+                              image_url: elem.image_url
                             }
                           })} />
                         </div>

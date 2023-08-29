@@ -154,7 +154,8 @@ export default function Lists(props: Props) {
                           taskElem.assignments && <Members members={taskElem.assignments.map(elem => {
                             return {
                               member_id: elem.user_id,
-                              username: elem.username
+                              username: elem.username,
+                              image_url: elem.image_url
                             }
                           })} />
                         }

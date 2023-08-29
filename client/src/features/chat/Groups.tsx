@@ -32,31 +32,32 @@ export default function Groups() {
       {
         loading
         ? <Loader size='big' />
-        : <div className={`m-6 rounded-lg p-6 bg-white max-h-screen overflow-auto 
-          flex ${chatID ? 'flex-col-reverse' : ''}`}>
+        : (<>
           {
             chatID
             ? <Chat chatID={chatID} onChatIDChange={() => handleChatIDChange(undefined)} />
-            : <div className='w-full'>
-              <h2>Chats</h2>
-              <hr />
-              {
-                projects && projects.map(elem => {
-                  return (
-                    <div key={elem.project_id} className='flex hover:bg-gray-300 cursor-pointer 
-                      p-3 place-items-center' onClick={() => setChatID(elem.chat_id)}>
-                      <img src={project} className='w-16 h-16 rounded-full border-black border-2 border-solid' />
-                      <div className='ml-5'>
-                        <div className='font-bold text-lg'>{elem.name}</div>
-                        <div className='text-gray-500 text-sm'>{elem.description.slice(0, 100)}</div>
+            : <div className={`m-6 rounded-lg p-6 bg-white max-h-screen overflow-auto flex`}>
+              <div className='w-full'>
+                <h2>Chats</h2>
+                <hr />
+                {
+                  projects && projects.map(elem => {
+                    return (
+                      <div key={elem.project_id} className='flex hover:bg-gray-300 cursor-pointer 
+                        p-3 place-items-center' onClick={() => setChatID(elem.chat_id)}>
+                        <img src={project} className='w-16 h-16 rounded-full border-black border-2 border-solid' />
+                        <div className='ml-5'>
+                          <div className='font-bold text-lg'>{elem.name}</div>
+                          <div className='text-gray-500 text-sm'>{elem.description.slice(0, 100)}</div>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })
-              }
+                    )
+                  })
+                }
+              </div>
             </div>
           }
-        </div>
+        </>)
       }
     </div>
   )

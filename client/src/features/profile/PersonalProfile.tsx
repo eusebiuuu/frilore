@@ -7,7 +7,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import CountrySelector from './CountriesSelector'
 import { COUNTRIES, Projects, SelectMenuOption, User, getAge } from './utils.profile'
 import project from '../../assets/project.png'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import customFetch from '../../lib/customFetch'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -15,30 +15,27 @@ import Loader from '../../components/Loader'
 import { catchAxiosError } from '../../utils/utils'
 import Modal from '../../components/Modal'
 import LoadingButton from '../../components/LoadingButton'
+import { useUserContext } from '../../context/user'
 
 const REQUESTS = 2;
 
-const initialUserData = {
-  username: '',
-  real_name: '',
-  email: '',
-  role: '',
-  country: '',
-  birthday: null,
-}
-
 export default function PersonalProfile() {
-  const [userData, setUserData] = useState<User>(initialUserData);
+  const { user } = useUserContext();
+  if (!user) {
+    return <Navigate to='/' replace />
+  }
+  const [userData, setUserData] = useState<User>(user);
   const [isOpen, setIsOpen] = useState(false);
   const [loadingCount, setLoadingCount] = useState(0);
   const [projects, setProjects] = useState<Projects>([]);
-  const [curUserData, setCurUserData] = useState<User>(initialUserData);
+  const [curUserData, setCurUserData] = useState<User>(user);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   function handleFormDataChange(e: ChangeEvent<HTMLInputElement>) {
     setUserData(oldVal => {
+      if (!oldVal) return oldVal;
       return {
         ...oldVal,
         [e.target.name]: e.target.value,
@@ -73,7 +70,7 @@ export default function PersonalProfile() {
     })();
     (async () => {
       try {
-        const result = await customFetch.get('/project/all');
+        const result = await customFetch.get('/project');
         setProjects(result.data.projects);
       } catch (err) {
         catchAxiosError(err);
@@ -104,7 +101,7 @@ export default function PersonalProfile() {
   async function handleModalChange(val: boolean) {
     setModalOpen(val);
   }
-
+  
   return (
     <div className='py-6 px-4'>
       {modalOpen && <Modal onModalClose={() => handleModalChange(false)} 
@@ -118,11 +115,11 @@ export default function PersonalProfile() {
             <img src={logo} alt='profile' className='h-40 w-40 m-auto border-2 border-transparent
               outline-2 outline outline-red-500 rounded-full my-2' />
             <div className='font-bold'>{userData.real_name}</div>
-            <p>{userData.country}</p>
+            <p>{user.country}</p>
             <hr />
             <Field icon={MdOutlineWorkOutline} text={userData.role} />
             <Field icon={AiOutlineCalendar} text={getAge(userData.birthday)} />
-            <Field icon={AiOutlineMail} text={userData.email} />
+            <Field icon={AiOutlineMail} text={user.email || ''} />
             <Field icon={AiOutlineFundProjectionScreen} text={`Worked in ${projects.length} projects`} />
           </div>
           <div className=' w-fit rounded-lg shadow-lg bg-white  p-4'>
@@ -132,7 +129,7 @@ export default function PersonalProfile() {
                 onInputChange={handleFormDataChange} />
               <Input inputName='real_name' name='Last Name' value={userData.real_name}
                 onInputChange={handleFormDataChange} />
-              <Input inputName='email' name='Email' value={userData.email}
+              <Input inputName='email' name='Email' value={userData.email || ''}
                 onInputChange={handleFormDataChange} disabled />
               <Input inputName='role' name='Role' value={userData.role}
                 onInputChange={handleFormDataChange} />

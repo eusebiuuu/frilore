@@ -49,7 +49,8 @@ export default function TaskModal(props: TaskModalProps) {
             <Members members={props.task.assignments.map(elem => {
               return {
                 member_id: elem.user_id,
-                username: elem.username
+                username: elem.username,
+                image_url: elem.image_url
               }
             })} />
           </div>

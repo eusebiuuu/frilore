@@ -2,6 +2,7 @@ import { createContext, useState, ReactNode, useContext, useEffect } from "react
 import { notificationsSocket, socket } from "../socket";
 import customFetch from "../lib/customFetch";
 import { catchAxiosError } from "../utils/utils";
+import { User } from "../features/profile/utils.profile";
 
 export type ContextValue = {
   isSidebarOpen: boolean,
@@ -13,23 +14,6 @@ export type ContextValue = {
 
 type UserContextProps = {
   children: ReactNode
-}
-
-type User = {
-  user_id: string,
-  username: string,
-  password: string | null,
-  real_name: string,
-  country: string,
-  email: string | null,
-  role: string,
-  image_public_id: string | null,
-  image_url: string,
-  birthday: string | null,
-  google_id: null | string,
-  github_id: null | string,
-  description: string,
-  last_login: string,
 }
 
 const defaultState: ContextValue = {
@@ -48,7 +32,7 @@ export default function UserProvider({ children }: UserContextProps) {
     "user_id": "3f0ee4b1-c232-49d9-baf5-dee451eab9a0",
     "username": "eusebiuu",
     "password": "$2b$10$FejZ4dxSwDRDDexoQrSLSeUEKbBzPHwRyeiFJF7fo8pNQlLEv87Lu",
-    "real_name": "web developer",
+    "real_name": "Adam Bob",
     "email": null,
     "country": "Romania",
     "role": "web developer",

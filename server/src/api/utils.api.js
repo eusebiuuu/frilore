@@ -35,3 +35,18 @@ export const getSingleEntity = async (entityID, entityTableName, entityIDName) =
 export const deleteAllAssignments = async (taskID) => {
   await pool.query(deleteAllAssignmentsQuery, [taskID]);
 }
+
+export function getLimit(limit, MAX_LIMIT) {
+  if (isNaN(limit)) {
+    return MAX_LIMIT;
+  }
+  const numLimit = parseInt(limit, 10);
+  return Math.min(Math.abs(numLimit), MAX_LIMIT);
+}
+
+export function getPage(page, DEFAULT_PAGE) {
+  if (isNaN(page)) {
+    return DEFAULT_PAGE;
+  }
+  return Math.abs(parseInt(page, 10));
+}
