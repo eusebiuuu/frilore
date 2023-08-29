@@ -17,7 +17,7 @@ export default function Projects() {
   useEffect(() => {
     (async () => {
       try {
-        const result = await customFetch.get('/project/members');
+        const result = await customFetch.get('/project/members/all');
         setProjects(result.data.projects);
         setShownProjects(result.data.projects);
       } catch (err) {

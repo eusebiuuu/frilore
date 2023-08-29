@@ -45,8 +45,7 @@ export function getListDropdown(handleModalDataChange: (data: ModalData) => void
 }
 
 export function getProjectDropdown(handleModalDataChange: (data: ModalData) => void,
-  projectID: string | undefined, onModalOpen: () => void, onProjectDelete: () => Promise<unknown>,
-  onProjectLeave: () => Promise<unknown>): Line[] {
+  projectID: string | undefined, onModalOpen: () => void, onProjectDelete: () => Promise<unknown>): Line[] {
   return [
     {
       name: 'Create list',
@@ -70,15 +69,6 @@ export function getProjectDropdown(handleModalDataChange: (data: ModalData) => v
         text: 'Delete',
         open: true,
       }),
-    },
-    {
-      name: 'Leave project',
-      action: () => handleModalDataChange({
-        content: 'Are you sure?',
-        text: 'Leave project',
-        action: onProjectLeave,
-        open: true,
-      })
     }
   ]
 }

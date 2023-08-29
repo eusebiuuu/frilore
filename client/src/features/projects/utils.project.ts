@@ -1,3 +1,9 @@
+import { toast } from "react-toastify"
+import customFetch from "../../lib/customFetch"
+import { DetailedMember, Project } from "./CreateProject"
+import { catchAxiosError } from "../../utils/utils"
+import { getStates } from "../../utils/getObjectsStates"
+import { notificationsSocket } from "../../socket"
 
 export type ModalData = {
   content: string,
@@ -56,85 +62,93 @@ export type ProjectsWithMembers = {
   }[]
 }[];
 
-export const lastUpdates = [
-  {
-    id: 0,
-    description: 'Andrew added alexalex to the project'
-  },
-  {
-    id: 1,
-    description: 'Andrew assigned task `Complete the back-end` to alexalex and eusebiuu'
-  },
-  {
-    id: 2,
-    description: 'Andrew created the project'
-  },
-  {
-    id: 3,
-    description: 'Andrew added you to the project'
-  }
-];
+export function prepareForObjectState(arr: DetailedMember[]) {
+  return arr.map(elem => {
+    return {
+      id: elem.member_id,
+      body: elem,
+    }
+  })
+}
 
-export const allMembers = [
-  {
-    id: 0,
-    name: 'Andrew andrew',
-  },
-  {
-    id: 1,
-    name: 'Alex alex',
-  },
-  {
-    id: 2,
-    name: 'Stephan stephan',
-  },
-  {
-    id: 3,
-    name: 'John Smith',
-  },
-  {
-    id: 4,
-    name: 'John Smith',
-  },
-  {
-    id: 5,
-    name: 'John Smith',
-  },
-  {
-    id: 6,
-    name: 'John Smith',
+export async function addMemberToProject(
+    project: Project, memberID: string, setMemberLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setProject: React.Dispatch<React.SetStateAction<Project>>
+  ) {
+  const exists = project.members.find(elem => {
+    return elem.member_id === memberID ? elem : null;
+  });
+  if (exists) {
+    toast.error('The user already exists');
+    return;
   }
-];
+  setMemberLoading(true);
+  try {
+    const result = await customFetch.get(`user/${memberID}`);
+    const currUser = result.data.user;
+    setProject(oldVal => {
+      return {
+        ...oldVal,
+        members: [...oldVal.members, {
+          username: currUser.username,
+          role: currUser.role === '' ? 'no role specified' : currUser.role,
+          member_id: currUser.user_id,
+          is_leader: false,
+          image_url: currUser.image_url,
+        }]
+      }
+    });
+  } catch (err) {
+    catchAxiosError(err);
+  } finally {
+    setMemberLoading(false);
+  }
+}
 
-export const tasks = [
-  {
-    id: 0,
-    title: 'Food research',
-    days: 12,
-    description: 'Food design is required for our new project let\'s research the best practices.'
-  },
-  {
-    id: 1,
-    title: 'Food research',
-    days: 12,
-    description: 'Food design is required for our new project let\'s research the best practices.'
-  },
-  {
-    id: 2,
-    title: 'Food research',
-    days: 12,
-    description: 'Food design is required for our new project let\'s research the best practices.'
-  },
-  {
-    id: 3,
-    title: 'Food research',
-    days: 12,
-    description: 'Food design is required for our new project let\'s research the best practices.'
-  },
-  {
-    id: 4,
-    title: 'Food research',
-    days: 12,
-    description: 'Food design is required for our new project let\'s research the best practices.'
-  },
-]
+export async function handleRegistrationsChange(
+    edit: boolean, project: Project, projectID: string, initialRegistrations: DetailedMember[], userID: string
+  ) {
+  let newProject;
+  if (edit) {
+    newProject = await customFetch.patch(`/project/${projectID}`, project);
+  } else {
+    newProject = await customFetch.post('/project', project);
+  }
+  const registrationStates = getStates(
+    prepareForObjectState(initialRegistrations),
+    prepareForObjectState(project.members)
+  );
+  // console.log(registrationStates);
+  for (const member of registrationStates.create as any[] as DetailedMember[]) {
+    await customFetch.post('/registration', {
+      candidateID: member.member_id,
+      projectID: newProject.data.project.project_id,
+      is_leader: member.is_leader,
+    });
+    notificationsSocket.emit('create-registration',
+      newProject.data.project.name,
+      member.member_id === userID,
+      member.member_id
+    );
+  }
+  for (const member of registrationStates.update as any[] as DetailedMember[]) {
+    await customFetch.patch(`/registration`, {
+      registeredUserID: member.member_id,
+      projectID: newProject.data.project.project_id,
+      is_leader: member.is_leader,
+    });
+    notificationsSocket.emit('update-registration',
+      newProject.data.project.name,
+      member.member_id
+    );
+  }
+  for (const member of registrationStates.delete as any[] as DetailedMember[]) {
+    await customFetch.delete(`/registration/${projectID}/${member.member_id}`);
+    notificationsSocket.emit('delete-registration',
+      newProject.data.project.name,
+      false,
+      member.member_id
+    );
+  }
+  return newProject;
+}

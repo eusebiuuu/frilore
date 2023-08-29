@@ -18,7 +18,6 @@ export type Projects = {
   project_id: string,
   description: string | '',
   name: string,
-  lastUpdates: string[],
   created_at: Date,
   chat_id: string,
 }[];

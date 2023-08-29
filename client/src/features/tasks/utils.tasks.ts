@@ -59,7 +59,7 @@ export const tagClasses = {
 
 const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export const getFullDate = (strDate: string): string => {
+export const getFullDate = (strDate: string | Date): string => {
   const date = new Date(strDate);
   const day = date.getDate();
   const month = date.getMonth();

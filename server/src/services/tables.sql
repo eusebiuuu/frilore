@@ -1,7 +1,7 @@
 CREATE TABLE user_table (
   user_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   username VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(1000) NOT NULL DEFAULT '',
+  password VARCHAR(500) NOT NULL DEFAULT '',
   real_name VARCHAR(20) NOT NULL DEFAULT '',
   email VARCHAR(100) UNIQUE CONSTRAINT email_validation CHECK (email ~ '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'),
   country VARCHAR(50) NOT NULL DEFAULT 'Romania',
@@ -17,7 +17,7 @@ CREATE TABLE user_table (
 
 CREATE TABLE project (
   project_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name VARCHAR(30) NOT NULL,
+  name VARCHAR(100) NOT NULL,
   description VARCHAR(300) NOT NULL,
   chat_id SERIAL UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()

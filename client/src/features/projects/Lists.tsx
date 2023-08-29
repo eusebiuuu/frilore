@@ -14,7 +14,7 @@ type Props = {
   onModalDataChange: (data: ModalData) => void,
   taskModalData: ITaskData,
   setTaskModalData: React.Dispatch<React.SetStateAction<ITaskData>>,
-  setChanged: React.Dispatch<React.SetStateAction<number>>
+  trigger: () => void
 }
 
 export default function Lists(props: Props) {
@@ -55,7 +55,7 @@ export default function Lists(props: Props) {
     } catch (err) {
       catchAxiosError(err);
     }
-    props.setChanged(oldVal => oldVal + 1);
+    props.trigger();
   }
   
   async function handleAllTasksDelete(listID: string) {
@@ -64,7 +64,7 @@ export default function Lists(props: Props) {
     } catch (err) {
       catchAxiosError(err);
     }
-    props.setChanged(oldVal => oldVal + 1);
+    props.trigger();
   }
 
   async function handleTaskModalDelete(taskID: string) {
@@ -73,14 +73,13 @@ export default function Lists(props: Props) {
     } catch (err) {
       catchAxiosError(err);
     }
-    props.setChanged(oldVal => oldVal + 1);
+    props.trigger();
   }
 
   function handleTaskModalUpdate(task: Task, listID: string) {
-    // console.log(task);
     props.setTaskModalData({
-      open: true,
       ...task,
+      open: true,
       action: 'update',
       listID
     });
@@ -131,7 +130,6 @@ export default function Lists(props: Props) {
                 <div className='grid grid-cols-1'>
                   { elem.tasks
                     ? elem.tasks.map((taskElem, taskIdx) => {
-                      // console.log(taskElem.assignments);
                       return <div key={taskElem.task_id} className='p-4 rounded-2xl border-2 shadow-sm mt-4'>
                         <div className='flex justify-between'>
                           <div className='font-bold'>{taskElem.name}</div>

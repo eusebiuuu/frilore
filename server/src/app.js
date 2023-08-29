@@ -16,13 +16,6 @@ import fileUpload from 'express-fileupload'
 import store from 'connect-pg-simple'
 import { connectionData } from './services/database.js';
 
-/*
-Others
-- resolve pg store bugs
-- delete githubAuth and googleAuth endpoints
-- refactor tables: VARCHAR length, constraints etc.
-*/
-
 const app = express();
 
 cloudinary.v2.config({
