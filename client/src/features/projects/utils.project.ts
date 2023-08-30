@@ -58,7 +58,7 @@ export type ProjectsWithMembers = {
   description: string | '',
   name: string,
   lastUpdates: string[],
-  created_at?: string,
+  created_at: string,
   members: {
     member_id: string,
     username: string,

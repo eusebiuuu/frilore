@@ -11,7 +11,7 @@ export const editProjectQuery = `UPDATE project SET name = $1, description = $2 
 
 export const deleteProjectQuery = 'DELETE FROM project WHERE project_id = $1';
 
-export const getProjectsWithMembersQuery = `SELECT * FROM (${getAllJoinedProjects}) AS projects LEFT JOIN (SELECT json_agg(json_build_object('member_id', user_table.user_id, 'username', username, 'image_url', user_table.image_url)) AS members, project_id FROM registration JOIN user_table ON user_table.user_id = registration.user_id GROUP BY project_id) AS user_info ON projects.project_id = user_info.project_id`;
+export const getProjectsWithMembersQuery = `SELECT * FROM (${getAllJoinedProjects}) AS projects LEFT JOIN (SELECT json_agg(json_build_object('member_id', user_table.user_id, 'username', username, 'image_url', user_table.image_url)) AS members, project_id FROM registration JOIN user_table ON user_table.user_id = registration.user_id GROUP BY project_id) AS user_info ON projects.project_id = user_info.project_id ORDER BY created_at`;
 
 export const getSingleProjectWithMembersInfoQuery = `SELECT * FROM (SELECT * FROM project WHERE project_id = $1) AS projects LEFT JOIN (SELECT json_agg(json_build_object('member_id', user_table.user_id, 'username', username, 'image_url', user_table.image_url, 'is_leader', r.is_leader, 'role', user_table.role)) AS members, project_id FROM registration r JOIN user_table ON user_table.user_id = r.user_id GROUP BY project_id) AS user_info ON projects.project_id = user_info.project_id`;
 

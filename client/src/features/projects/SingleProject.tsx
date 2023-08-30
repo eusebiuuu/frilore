@@ -38,6 +38,7 @@ const initialStateTask: ITaskData = {
   assignments: [],
   action: 'create',
   listID: '',
+  created_at: new Date(),
 }
 
 export default function SingleProject() {
@@ -189,7 +190,7 @@ export default function SingleProject() {
             </div>
           </div>
           <div className='my-6'>
-            💡Tip! Hold <code className='font-bold'>Shift</code> while scrolling to scroll horizontally! ;)
+            💡Tip! Hold <code className='font-bold'>Shift</code> while scrolling to scroll horizontally! 😉
           </div>
           <div className='bg-white rounded-md p-4 my-6 w-full'>
             <div className='flex justify-between pb-4 w-full'>
@@ -210,8 +211,8 @@ export default function SingleProject() {
               
             </div>
             <hr className='mb-3' />
-            <Lists project={project} onModalDataChange={handleModalDataChange} setTaskModalData={setTaskModalData}
-              taskModalData={taskModalData} trigger={triggerRerendering} />
+            {project && <Lists project={project} onModalDataChange={handleModalDataChange} setProject={setProject}
+              setTaskModalData={setTaskModalData} taskModalData={taskModalData} trigger={triggerRerendering} />}
           </div>
         </>
       }
