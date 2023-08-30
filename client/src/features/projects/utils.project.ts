@@ -29,6 +29,7 @@ export type Task = {
   deadline: string,
   assignments: Assignment[],
   open?: boolean,
+  created_at: Date,
 }
 
 type List = {

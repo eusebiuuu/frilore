@@ -19,6 +19,7 @@ import Groups from "./features/chat/Groups"
 import { useUserContext } from "./context/user"
 import Loader from "./components/Loader"
 import ProtectedRoute from "./components/ProtectedRoute"
+import NotFound from "./features/extra/NotFound"
 
 function App() {
   const { user } = useUserContext();
@@ -92,6 +93,7 @@ function App() {
                   <Groups />
                 </ProtectedRoute>
               } />
+              <Route path='*' element={<NotFound />} />
             </Routes>
           </div>
           <Footer />

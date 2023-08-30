@@ -63,7 +63,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(morgan('common'));
 app.use('/api/v1', version1Router);
 app.use('/', (_, res) => res.send('<h1>Home page</h1>'));
-authStrategies(app);
+authStrategies();
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

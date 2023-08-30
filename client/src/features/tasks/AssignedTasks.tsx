@@ -19,6 +19,7 @@ const initialState: Task[] = [{
   assignments: [],
   priority: 'high',
   open: false,
+  created_at: new Date(),
 }];
 
 export default function AssignedTasks() {
@@ -58,7 +59,7 @@ export default function AssignedTasks() {
   }, []);
 
   useEffect(() => {
-    setCurTasks(tasks.filter(task => {
+    const newTasks = tasks.filter(task => {
       const statusIdx = StatusTypes.indexOf(task.status);
       if (!status[statusIdx]) {
         return null;
@@ -69,8 +70,23 @@ export default function AssignedTasks() {
       if (task.description.toLowerCase().includes(keywords)) {
         return task;
       }
-    }))
-  }, [keywords, status]);
+    });
+    newTasks.sort((a, b) => {
+      if (criteria === 'closest deadline') {
+        return a.created_at < b.created_at ? -1 : 1;
+      } else if (criteria === 'highest priority') {
+        if (a.priority !== b.priority) {
+          return a.priority === 'low' ? 1 : -1;
+        }
+        return 0;
+      }
+      if (a.priority !== b.priority) {
+        return a.priority === 'low' ? -1 : 1;
+      }
+      return 0;
+    })
+    setCurTasks(newTasks);
+  }, [keywords, status, criteria]);
 
   function handleCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
     const fieldName = e.target.name;
@@ -186,9 +202,6 @@ export default function AssignedTasks() {
                 )
               })
             }
-          </div>
-          <div className="w-full text-center">
-            Pagination
           </div>
         </>
       }

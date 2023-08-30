@@ -9,7 +9,8 @@ export type ContextValue = {
   onSidebarToggle: (val: boolean) => void,
   user: User | null | undefined,
   logout: () => Promise<unknown>,
-  login: (user: User) => void
+  login: (password: string, username: string) => Promise<unknown>,
+  register: (password: string, username: string) => Promise<unknown>,
 }
 
 type UserContextProps = {
@@ -21,7 +22,8 @@ const defaultState: ContextValue = {
   onSidebarToggle: (val: boolean) => { val },
   user: null,
   logout: async () => {},
-  login: (_: User) => {},
+  login: async () => {},
+  register: async () => {},
 }
 
 const UserContext = createContext(defaultState);
@@ -32,10 +34,10 @@ export default function UserProvider({ children }: UserContextProps) {
     "user_id": "3f0ee4b1-c232-49d9-baf5-dee451eab9a0",
     "username": "eusebiuu",
     "password": "$2b$10$FejZ4dxSwDRDDexoQrSLSeUEKbBzPHwRyeiFJF7fo8pNQlLEv87Lu",
-    "real_name": "Adam Bob",
+    "real_name": "",
     "email": null,
     "country": "Romania",
-    "role": "web developer",
+    "role": "",
     "birthday": null,
     "image_public_id": null,
     "image_url": "https://res.cloudinary.com/dwgihvjqj/image/upload/v1692532441/frilore/abstract-user-flat-4_pl9jts.png",
@@ -77,14 +79,32 @@ export default function UserProvider({ children }: UserContextProps) {
     try {
       await customFetch.delete('/auth/logout');
       setUser(undefined);
-      // disconnect from sockets
+      // disconnect from sockets & more similar
     } catch (err) {
       catchAxiosError(err);
     }
   }
 
-  function loginUser(user: User) {
-    setUser(user);
+  async function loginUser(password: string, username: string) {
+    try {
+      await customFetch.post('/auth/login', {
+        password,
+        username
+      });
+    } catch (err) {
+      catchAxiosError(err);
+    }
+  }
+
+  async function registerUser(password: string, username: string) {
+    try {
+      await customFetch.post('/auth/register', {
+        password,
+        username
+      });
+    } catch (err) {
+      catchAxiosError(err);
+    }
   }
   
   function handleSidebarToggle(value: boolean) {
@@ -97,6 +117,7 @@ export default function UserProvider({ children }: UserContextProps) {
     user,
     logout: logoutUser,
     login: loginUser,
+    register: registerUser,
   }
 
   return (

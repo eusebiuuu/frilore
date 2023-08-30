@@ -12,7 +12,7 @@ authRouter.post(
   passport.authenticate('local', { successRedirect: '/' })
 );
 
-authRouter.get(
+authRouter.post(
   '/login',
   passport.authenticate('local', { successRedirect: '/' })
 );

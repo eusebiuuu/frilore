@@ -132,7 +132,7 @@ export default function Navbar() {
                 {user.country}
               </div>
             </Link>
-            <img src={logo} className='rounded-full w-11 h-11 mx-2' />
+            <img src={user.image_url} className='rounded-full w-11 h-11 mx-2' />
             <button className='md:hidden pl-4' onClick={() => onSidebarToggle(true)}>
               <BsLayoutSidebar size={40} />
             </button>
