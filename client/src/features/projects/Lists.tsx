@@ -106,14 +106,15 @@ export default function Lists(props: Props) {
 
   return (
     <DragDropContext onDragEnd={(result) => onDragEnd(result, project, props.setProject)}>
-      <div className='flex overflow-auto w-full rotate-x'>
+      <div className='flex overflow-auto w-full'>
         {
           project.lists.map((elem, listIdx) => {
             return (
-              <Droppable key={listIdx} droppableId={elem.list_id}>
-                {provider =>
-                  <div ref={provider.innerRef} className='border-gray-200 border-solid 
-                    border-2 rounded-lg min-w-96 mb-6 mx-5 rotate-scroll rotate-x' {...provider.droppableProps}>
+              <Droppable key={elem.list_id} droppableId={elem.list_id}>
+                {(provider, snapshot) =>
+                  <div ref={provider.innerRef} className={`border-gray-200 border-4 
+                    border-solid rounded-lg min-w-96 mb-6 mx-5`} 
+                    {...provider.droppableProps}>
                     <div className='flex justify-between bg-gray-200 p-3 rounded-t-md'>
                       <h4 className='grid place-content-center'>{elem.title}</h4>
                       <div className='relative'>
@@ -129,19 +130,24 @@ export default function Lists(props: Props) {
                         )}
                       </div>
                     </div>
-                    <div className='p-4'>
+                    <div className={`p-4 ${snapshot.isDraggingOver ? ' bg-blue-200' : 'bg-transparent'}`}>
                       <button className='w-full rounded-2xl border-dashed border-4 grid place-content-center py-1'
                         onClick={() => handleTaskModalCreate(elem.list_id)}>
                         <AiOutlinePlus size={30} />
                       </button>
-                      <div className='grid grid-cols-1'>
+                      <div className='grid grid-cols-1 gap-4'>
                         { elem.tasks.length > 0
                           ? elem.tasks.map((taskElem, taskIdx) => {
                             return (
                               <Draggable key={taskElem.task_id} draggableId={taskElem.task_id} index={taskIdx}>
-                                {taskProvider => (
-                                  <div className='p-4 rounded-2xl border-2 shadow-sm mt-4 cursor-grab [&>*]:cursor-grab'
-                                    {...taskProvider.draggableProps}>
+                                {(taskProvider, snapshot) => (
+                                  <div 
+                                    className={`p-4 rounded-2xl border-2 shadow-sm w-full h-full 
+                                      ${snapshot.isDragging ? 'bg-gray-200' : 'bg-white'}`}
+                                    ref={taskProvider.innerRef}
+                                    {...taskProvider.draggableProps}
+                                    {...taskProvider.dragHandleProps}
+                                  >
                                     <div className='flex justify-between'>
                                       <div className='font-bold'>{taskElem.name}</div>
                                       <div className='flex'>
@@ -160,17 +166,15 @@ export default function Lists(props: Props) {
                                         /> }
                                       </div>
                                     </div>
-                                    <div {...taskProvider.dragHandleProps} ref={taskProvider.innerRef}>
+                                    <div>
                                       <div className='text-gray-500'>{taskElem.description}</div>
-                                      {
-                                        taskElem.assignments && <Members members={taskElem.assignments.map(elem => {
-                                          return {
-                                            member_id: elem.user_id,
-                                            username: elem.username,
-                                            image_url: elem.image_url
-                                          }
-                                        })} />
-                                      }
+                                      <Members members={taskElem.assignments.map(elem => {
+                                        return {
+                                          member_id: elem.user_id,
+                                          username: elem.username,
+                                          image_url: elem.image_url
+                                        }
+                                      })} />
                                     </div>
                                   </div>
                                 )}

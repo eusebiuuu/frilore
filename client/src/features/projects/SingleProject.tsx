@@ -211,8 +211,10 @@ export default function SingleProject() {
               
             </div>
             <hr className='mb-3' />
-            {project && <Lists project={project} onModalDataChange={handleModalDataChange} setProject={setProject}
-              setTaskModalData={setTaskModalData} taskModalData={taskModalData} trigger={triggerRerendering} />}
+            <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
+              {project && <Lists project={project} onModalDataChange={handleModalDataChange} setProject={setProject}
+                setTaskModalData={setTaskModalData} taskModalData={taskModalData} trigger={triggerRerendering} />}
+            </div>
           </div>
         </>
       }
