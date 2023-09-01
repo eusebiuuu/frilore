@@ -13,6 +13,8 @@ import Modal from "../../components/Modal";
 import ListModal from "./ListModal";
 import { getProjectDropdown } from "./dropdown-logic";
 import CreateTaskModal from "../tasks/CreateTaskModal";
+import { notificationsSocket } from "../../socket";
+import { useUserContext } from "../../context/user";
 
 const initialState = {
   content: '',
@@ -36,11 +38,13 @@ const initialStateTask: ITaskData = {
   assignments: [],
   action: 'create',
   listID: '',
+  created_at: new Date(),
 }
 
 export default function SingleProject() {
   const [members, setMembers] = useState(false);
   const { id: projectID } = useParams();
+  const { user } = useUserContext();
   const [project, setProject] = useState<CompleteProject>();
   const [changed, setChanged] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -52,6 +56,7 @@ export default function SingleProject() {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         const result = await customFetch.get(`/project/${projectID}`);
         setProject(result.data.project);
@@ -65,6 +70,11 @@ export default function SingleProject() {
 
   function handleModalDataChange(data: ModalData) {
     setModalData(data);
+  }
+
+  function triggerRerendering() {
+    console.log('Re-render');
+    setChanged(old => old + 1);
   }
 
   async function handleProjectDelete() {
@@ -85,7 +95,7 @@ export default function SingleProject() {
     } catch (err) {
       catchAxiosError(err);
     }
-    setChanged(oldVal => oldVal + 1);
+    triggerRerendering();
   }
 
   function handleModalChange(val: boolean) {
@@ -99,7 +109,6 @@ export default function SingleProject() {
 
   function handleListModalChange(val: boolean) {
     setListModal(val);
-    setChanged(oldVal => oldVal + Number(!val));
   }
 
   function handleTaskModalClose() {
@@ -109,16 +118,26 @@ export default function SingleProject() {
         open: false,
       }
     })
-    setChanged(oldVal => oldVal + 1);
+    triggerRerendering();
   }
 
   async function handleProjectLeave() {
     try {
-      const result = await customFetch.get(`/registration/single/${projectID}`);
-      await customFetch.delete(`/registration/${result.data.registration.registration_id}`);
+      await customFetch.delete(`/registration/${projectID}/${user?.user_id}`);
+      notificationsSocket.emit('delete-registration', project?.name, true, user?.user_id);
+      navigate('/projects');
     } catch (err) {
       catchAxiosError(err);
     }
+  }
+
+  function handleLeaveProjectModalOpen() {
+    setModalData({
+      content: 'Are you sure you want to leave the project?',
+      text: 'Leave',
+      action: handleProjectLeave,
+      open: true,
+    })
   }
 
   return (
@@ -135,7 +154,7 @@ export default function SingleProject() {
             type={taskModalData.action} task={taskModalData} members={project?.members || []}
             listID={taskModalData.listID}
           />}
-          <div>
+          <div className="w-full flex justify-between">
             <div className='relative'>
               <button className='bg-primary px-4 py-2 relative' onClick={() => setMembers(true)}>
                 View all members
@@ -164,9 +183,14 @@ export default function SingleProject() {
                 }
               </div>
             </div>
+            <div>
+              <button className='bg-primary px-4 py-2 relative' onClick={handleLeaveProjectModalOpen}>
+                Leave project
+              </button>
+            </div>
           </div>
           <div className='my-6'>
-            💡Tip! Hold <code className='font-bold'>Shift</code> while scrolling to scroll horizontally! ;)
+            💡Tip! Hold <code className='font-bold'>Shift</code> while scrolling to scroll horizontally! 😉
           </div>
           <div className='bg-white rounded-md p-4 my-6 w-full'>
             <div className='flex justify-between pb-4 w-full'>
@@ -180,7 +204,6 @@ export default function SingleProject() {
                     handleModalDataChange, projectID,
                     () => handleListModalChange(true),
                     async () => await handleProjectDelete(),
-                    async () => await handleProjectLeave()
                     )} onDropdownClose={() => setProjectDropdown(false)}
                   />
                 )}
@@ -188,8 +211,10 @@ export default function SingleProject() {
               
             </div>
             <hr className='mb-3' />
-            <Lists project={project} onModalDataChange={handleModalDataChange} setTaskModalData={setTaskModalData}
-              taskModalData={taskModalData} setChanged={setChanged} />
+            <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
+              {project && <Lists project={project} onModalDataChange={handleModalDataChange} setProject={setProject}
+                setTaskModalData={setTaskModalData} taskModalData={taskModalData} trigger={triggerRerendering} />}
+            </div>
           </div>
         </>
       }

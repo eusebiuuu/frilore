@@ -16,13 +16,6 @@ import fileUpload from 'express-fileupload'
 import store from 'connect-pg-simple'
 import { connectionData } from './services/database.js';
 
-/*
-Others
-- resolve pg store bugs
-- delete githubAuth and googleAuth endpoints
-- refactor tables: VARCHAR length, constraints etc.
-*/
-
 const app = express();
 
 cloudinary.v2.config({
@@ -70,7 +63,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(morgan('common'));
 app.use('/api/v1', version1Router);
 app.use('/', (_, res) => res.send('<h1>Home page</h1>'));
-authStrategies(app);
+authStrategies();
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

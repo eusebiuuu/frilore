@@ -16,43 +16,90 @@ import Dashboard from "./features/dashboard/Dashboard"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import Groups from "./features/chat/Groups"
+import { useUserContext } from "./context/user"
+import Loader from "./components/Loader"
+import ProtectedRoute from "./components/ProtectedRoute"
+import NotFound from "./features/extra/NotFound"
 
 function App() {
+  const { user } = useUserContext();
   return (<div>
-    <ToastContainer
-      position="bottom-right"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
-    <Router>
-      <Navbar />
-      <div className="flex max-w-full">
-        <FixedSidebar />
-        <MobileSidebar />
-        <Routes>
-          <Route index element={<Dashboard />} />
-          <Route path='home' element={<Home />} />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
-          <Route path='projects' element={<Projects />} />
-          <Route path='projects/:id' element={<SingleProject />} />
-          <Route path='tasks' element={<AssignedTasks />} />
-          <Route path='profile' element={<PersonalProfile />} />
-          <Route path='profile/:id' element={<ForeignProfile />} />
-          <Route path='create-project' element={<CreateProject />} />
-          <Route path='create-project/:id' element={<CreateProject />} />
-          <Route path='chat' element={<Groups />} />
-        </Routes>
-      </div>
-      <Footer />
-    </Router>
+    {
+      user === null
+      ? <Loader size='big' />
+      : <>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <Router>
+          <Navbar />
+          <div className="flex max-w-full">
+            { user && <FixedSidebar /> }
+            { user && <MobileSidebar /> }
+            <Routes>
+              <Route index element={
+                user
+                ? <Dashboard />
+                : <Home />
+              } />
+              <Route path='login' element={<Login />} />
+              <Route path='register' element={<Register />} />
+              <Route path='projects' element={
+                <ProtectedRoute>
+                  <Projects />
+                </ProtectedRoute>
+              } />
+              <Route path='projects/:id' element={
+                <ProtectedRoute>
+                  <SingleProject />
+                </ProtectedRoute>
+              } />
+              <Route path='tasks' element={
+                <ProtectedRoute>
+                  <AssignedTasks />
+                </ProtectedRoute>
+              } />
+              <Route path='profile' element={
+                <ProtectedRoute>
+                  <PersonalProfile />
+                </ProtectedRoute>
+              } />
+              <Route path='profile/:id' element={
+                <ProtectedRoute>
+                  <ForeignProfile />
+                </ProtectedRoute>
+              } />
+              <Route path='create-project' element={
+                <ProtectedRoute>
+                  <CreateProject />
+                </ProtectedRoute>
+              } />
+              <Route path='create-project/:id' element={
+                <ProtectedRoute>
+                  <CreateProject />
+                </ProtectedRoute>
+              } />
+              <Route path='chat' element={
+                <ProtectedRoute>
+                  <Groups />
+                </ProtectedRoute>
+              } />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </Router>
+      </>
+    }
   </div>)
 }
 

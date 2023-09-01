@@ -5,6 +5,7 @@ export type ObjType = {
 }
 
 export function getStates(arrObj1: Array<ObjType>, arrObj2: Array<ObjType>) {
+  // console.log(arrObj1, arrObj2);
   const deletedObj: ObjType[] = arrObj1.filter(elem1 => {
     if (!arrObj2.find(elem2 => elem2.id === elem1.id)) {
       return elem1;

@@ -27,6 +27,7 @@ const initialState: Task = {
   description: '',
   assignments: [],
   priority: 'high',
+  created_at: new Date()
 }
 
 export default function CreateTaskModal(props: CreateTaskModalProps) {

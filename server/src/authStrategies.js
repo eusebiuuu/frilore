@@ -9,7 +9,7 @@ import pool from "./services/database.js";
 import bcrypt from 'bcrypt';
 import { checkUsernameDuplicationQuery } from "./api/auth/auth.queries.js";
 
-export default function authStrategies(app) {
+export default function authStrategies() {
   passport.use(new LocalStrategy(async (username, password, done) => {
     const existingUser = await pool.query(
       checkUsernameDuplicationQuery,

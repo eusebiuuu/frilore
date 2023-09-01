@@ -43,9 +43,9 @@ export function notificationNamespaceLogic(io) {
       );
     });
 
-    socket.on('create-registration', async ({ projectName, userID }) => {
+    socket.on('create-registration', async (projectName, leader, userID) => {
       await createNotification(
-        `You have entered in project '${projectName}'`,
+        `You ${leader ? 'created' : 'have been added to'} the project '${projectName}'`,
         userID,
       );
     });
@@ -70,7 +70,6 @@ export function notificationNamespaceLogic(io) {
         [userID]
       );
       notificationNamespace.in(userID).emit('read-notifications');
-      console.log('Here');
     })
   });
 }

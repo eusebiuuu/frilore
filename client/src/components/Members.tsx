@@ -1,9 +1,9 @@
-import { BiSolidUser } from 'react-icons/bi'
 
 type MembersProps = {
   members: {
     member_id: string,
-    username: string
+    username: string,
+    image_url: string,
   }[],
 }
 
@@ -17,9 +17,8 @@ export default function Members(props: MembersProps) {
     <div className='flex'>
       {
         members.slice(0, end).map(elem => {
-          return <div key={elem.member_id} className='rounded-full bg-gray-300 -ml-2 border-2 border-white p-1'>
-            <BiSolidUser size={25} />
-          </div>
+          return <img key={elem.member_id} src={elem.image_url} 
+            className='h-10 rounded-full -ml-2 border-2 border-white' />
         })
       }
       {

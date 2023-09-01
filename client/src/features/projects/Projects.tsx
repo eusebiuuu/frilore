@@ -17,7 +17,7 @@ export default function Projects() {
   useEffect(() => {
     (async () => {
       try {
-        const result = await customFetch.get('/project/members');
+        const result = await customFetch.get('/project/members/all');
         setProjects(result.data.projects);
         setShownProjects(result.data.projects);
       } catch (err) {
@@ -33,8 +33,17 @@ export default function Projects() {
       if (elem.name.toLowerCase().includes(keyword) || elem.description.toLowerCase().includes(keyword)) {
         return elem;
       }
+    }).sort((a, b) => {
+      if (criteria === 'oldest first') {
+        return a.created_at < b.created_at ? -1 : 1;
+      } else if (criteria === 'newest first') {
+        return a.created_at < b.created_at ? 1 : -1;
+      } else if (criteria === 'alphabetical') {
+        return a.name < b.name ? -1 : 1;
+      }
+      return b.members.length - a.members.length;
     }));
-  }, [keyword]);
+  }, [keyword, criteria]);
 
   return (
     <div className='p-10 w-full'>

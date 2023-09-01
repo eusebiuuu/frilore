@@ -18,18 +18,25 @@ export type Projects = {
   project_id: string,
   description: string | '',
   name: string,
-  lastUpdates: string[],
   created_at: Date,
   chat_id: string,
 }[];
 
 export type User = {
+  user_id: string,
   username: string,
+  password: string | null,
   real_name: string,
-  email: string,
-  role: string,
   country: string,
-  birthday: string | null | undefined,
+  email: string | null,
+  role: string,
+  image_public_id: string | null,
+  image_url: string,
+  birthday: string | null,
+  google_id: null | string,
+  github_id: null | string,
+  description: string,
+  last_login: string,
 }
 
 export type SelectMenuOption = typeof COUNTRIES[number]
