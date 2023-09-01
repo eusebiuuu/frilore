@@ -32,7 +32,7 @@ export type Task = {
   created_at: Date,
 }
 
-type List = {
+export type List = {
   list_id: string,
   title: string,
   tasks: Task[]

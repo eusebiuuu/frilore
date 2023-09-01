@@ -2,12 +2,12 @@ import { useState } from "react"
 import ModalWrapper from "../../components/ModalWrapper";
 import LoadingButton from "../../components/LoadingButton";
 
-type Props = {
+export type ListModalProps = {
   action: (title: string) => Promise<unknown>,
   onModalClose: () => void
 }
 
-export default function ListModal(props: Props) {
+export default function ListModal(props: ListModalProps) {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 

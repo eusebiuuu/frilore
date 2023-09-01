@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CompleteProject, ModalData, Task } from "./utils.project";
+import { CompleteProject } from "./utils.project";
 import { GrClose } from "react-icons/gr";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import logo from '../../assets/logo.svg'
@@ -11,47 +11,21 @@ import ButtonsDropdown from "../../components/ButtonsDropdown";
 import Lists from "./Lists";
 import Modal from "../../components/Modal";
 import ListModal from "./ListModal";
-import { getProjectDropdown } from "./dropdown-logic";
+import { getProjectDropdown } from "./dropdownActions";
 import CreateTaskModal from "../tasks/CreateTaskModal";
 import { notificationsSocket } from "../../socket";
 import { useUserContext } from "../../context/user";
-
-const initialState = {
-  content: '',
-  text: '',
-  action: async () => {},
-  open: false,
-}
-
-export interface ITaskData extends Task {
-  action: 'update' | 'create',
-  listID: string,
-}
-
-const initialStateTask: ITaskData = {
-  task_id: '',
-  name: '',
-  status: 'to do',
-  deadline: '2023-05-23',
-  description: '',
-  priority: 'high',
-  assignments: [],
-  action: 'create',
-  listID: '',
-  created_at: new Date(),
-}
+import TaskModal from "../tasks/TaskModal";
+import { useModalContext } from "../../context/modals";
 
 export default function SingleProject() {
+  const { modalInfo, onGeneralModalChange, onModalToggle } = useModalContext();
   const [members, setMembers] = useState(false);
   const { id: projectID } = useParams();
-  const { user } = useUserContext();
+  const { user, isSidebarOpen } = useUserContext();
   const [project, setProject] = useState<CompleteProject>();
-  const [changed, setChanged] = useState(0);
   const [loading, setLoading] = useState(true);
   const [projectDropdown, setProjectDropdown] = useState(false);
-  const [modalData, setModalData] = useState<ModalData>(initialState);
-  const [listModal, setListModal] = useState(false);
-  const [taskModalData, setTaskModalData] = useState<ITaskData>(initialStateTask);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,60 +40,7 @@ export default function SingleProject() {
         setLoading(false);
       }
     })();
-  }, [changed]);
-
-  function handleModalDataChange(data: ModalData) {
-    setModalData(data);
-  }
-
-  function triggerRerendering() {
-    console.log('Re-render');
-    setChanged(old => old + 1);
-  }
-
-  async function handleProjectDelete() {
-    try {
-      await customFetch.delete(`/project/${projectID}`);
-    } catch (err) {
-      catchAxiosError(err);
-    }
-    navigate('/projects');
-  }
-
-  async function handleListCreate(title: string) {
-    try {
-      await customFetch.post(`/list`, {
-        title,
-        projectID,
-      });
-    } catch (err) {
-      catchAxiosError(err);
-    }
-    triggerRerendering();
-  }
-
-  function handleModalChange(val: boolean) {
-    setModalData(oldVal => {
-      return {
-        ...oldVal,
-        open: val,
-      }
-    })
-  }
-
-  function handleListModalChange(val: boolean) {
-    setListModal(val);
-  }
-
-  function handleTaskModalClose() {
-    setTaskModalData(oldVal => {
-      return {
-        ...oldVal,
-        open: false,
-      }
-    })
-    triggerRerendering();
-  }
+  }, []);
 
   async function handleProjectLeave() {
     try {
@@ -132,28 +53,24 @@ export default function SingleProject() {
   }
 
   function handleLeaveProjectModalOpen() {
-    setModalData({
-      content: 'Are you sure you want to leave the project?',
-      text: 'Leave',
-      action: handleProjectLeave,
-      open: true,
-    })
+    onGeneralModalChange(true, {
+      onModalClose: () => onModalToggle('general', false),
+      rightAction: handleProjectLeave,
+      rightContent: 'Leave',
+      question: 'Are you sure you want to leave the project?',
+    });
   }
 
   return (
-    <div className='md:w-[calc(100%-16rem)] sm:w-full p-8'>
+    <div className={`${isSidebarOpen && 'md:w-[calc(100%-16rem)]'} w-full p-8`}>
       {
         loading
         ? <Loader size='big' />
         : <>
-          { modalData.open && <Modal question={modalData.content} leftContent="Cancel"
-            onModalClose={() => handleModalChange(false)} 
-            rightContent={modalData.text} rightAction={modalData.action} /> }
-          { listModal && <ListModal action={handleListCreate} onModalClose={() => handleListModalChange(false)} />}
-          {taskModalData.open && <CreateTaskModal onModalClose={handleTaskModalClose} projectTitle={project?.name || ''}
-            type={taskModalData.action} task={taskModalData} members={project?.members || []}
-            listID={taskModalData.listID}
-          />}
+          { modalInfo.general.open && <Modal {...modalInfo.general.content} /> }
+          { modalInfo.list.open && <ListModal {...modalInfo.list.content} /> }
+          { modalInfo.actionTask.open && <CreateTaskModal {...modalInfo.actionTask.content} /> }
+          { modalInfo.singleTask.open && <TaskModal {...modalInfo.singleTask.content} /> }
           <div className="w-full flex justify-between">
             <div className='relative'>
               <button className='bg-primary px-4 py-2 relative' onClick={() => setMembers(true)}>
@@ -199,12 +116,10 @@ export default function SingleProject() {
                 <button onClick={() => setProjectDropdown(true)}>
                   <BsThreeDotsVertical size={40} />
                 </button>
-                { projectDropdown && (
-                  <ButtonsDropdown lines={getProjectDropdown(
-                    handleModalDataChange, projectID,
-                    () => handleListModalChange(true),
-                    async () => await handleProjectDelete(),
-                    )} onDropdownClose={() => setProjectDropdown(false)}
+                { projectDropdown && project && (
+                  <ButtonsDropdown 
+                    lines={getProjectDropdown(project)}
+                    onDropdownClose={() => setProjectDropdown(false)}
                   />
                 )}
               </div>
@@ -212,8 +127,7 @@ export default function SingleProject() {
             </div>
             <hr className='mb-3' />
             <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
-              {project && <Lists project={project} onModalDataChange={handleModalDataChange} setProject={setProject}
-                setTaskModalData={setTaskModalData} taskModalData={taskModalData} trigger={triggerRerendering} />}
+              {project && <Lists project={project} setProject={setProject} />}
             </div>
           </div>
         </>

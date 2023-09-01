@@ -10,7 +10,7 @@ import LoadingButton from "../../components/LoadingButton";
 import { getStates } from "../../utils/getObjectsStates";
 import { notificationsSocket } from "../../socket";
 
-type CreateTaskModalProps = {
+export type CreateTaskModalProps = {
   onModalClose: () => void,
   type: 'create' | 'update',
   task?: Task,

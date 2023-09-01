@@ -7,7 +7,7 @@ import { BsFillPeopleFill } from 'react-icons/bs'
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { Task } from "../projects/utils.project";
 
-type TaskModalProps = {
+export type TaskModalProps = {
   onModalClose: () => void,
   task: Task
 }
