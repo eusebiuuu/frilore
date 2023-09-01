@@ -7,8 +7,10 @@ import { Task } from "../projects/utils.project";
 import customFetch from "../../lib/customFetch";
 import { catchAxiosError } from "../../utils/utils";
 import Loader from "../../components/Loader";
+import { useUserContext } from "../../context/user";
 
 export default function Dashboard() {
+  const { isSidebarOpen } = useUserContext();
   const [tasks, setTasks] = useState<Task[] | []>([]);
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<{ name: string, total_tasks: string }[] | []>([]);
@@ -28,7 +30,7 @@ export default function Dashboard() {
     })();
   }, []);
   return (
-    <div className='p-6 md:w-[calc(100%-16rem)] sm:w-full'>
+    <div className={`p-6 ${isSidebarOpen && 'md:w-[calc(100%-16rem)]'} sm:w-full`}>
       {
         loading
         ? <Loader size='big' />

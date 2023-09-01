@@ -1,15 +1,15 @@
 import { useState } from "react";
 import ModalWrapper from "./ModalWrapper";
 
-type ModalProps = {
+export type GeneralModalProps = {
   question: string,
-  leftContent: string,
+  leftContent?: string,
   rightContent: string,
   onModalClose: () => void,
   rightAction: () => Promise<unknown>,
 }
 
-export default function Modal(props: ModalProps) {
+export default function Modal(props: GeneralModalProps) {
   const [loading, setLoading] = useState(false);
 
   function handleLeftClick() {
@@ -31,7 +31,7 @@ export default function Modal(props: ModalProps) {
       <div className='bg-white rounded-lg p-6 w-1/2'>
         <div className="mx-auto my-4">{props.question}</div>
         <div className='flex justify-around'>
-          <button onClick={() => handleLeftClick()}>{props.leftContent}</button>
+          <button onClick={() => handleLeftClick()}>{props.leftContent || 'Cancel'}</button>
           {
             loading
             ? <button>Loading...</button>
