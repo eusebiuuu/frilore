@@ -9,7 +9,7 @@ export default function FixedSidebar() {
         ${isSidebarOpen && 'md:block'} relative`}>
         <SidebarContent />
       </aside>
-      <button className={`fixed bottom-10 left-10 rounded-full z-30 hover:bg-blue-400 bg-transparent shadow-lg p-4`} 
+      <button className={`fixed bottom-10 left-10 rounded-full z-30 hover:bg-blue-400 bg-gray-100 shadow-lg p-4`} 
         onClick={() => onSidebarToggle(!isSidebarOpen)}>
         {isSidebarOpen
           ? <AiOutlineArrowLeft size='30' />

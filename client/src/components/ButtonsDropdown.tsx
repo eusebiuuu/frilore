@@ -9,7 +9,7 @@ export type Line = {
 }
 
 type Props = {
-  lines: Line[],
+  lines: () => Line[],
   className?: string,
   onDropdownClose: () => void
 }
@@ -31,7 +31,7 @@ export default function ButtonsDropdown(props: Props) {
       </button>
       <hr className='bg-black' />
       {
-        props.lines.map(elem => {
+        props.lines().map(elem => {
           return (<div key={nanoid()}>
             {
               elem.type === 'link'

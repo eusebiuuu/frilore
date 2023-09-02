@@ -18,7 +18,7 @@ export default function Members(props: MembersProps) {
       {
         members.slice(0, end).map(elem => {
           return <img key={elem.member_id} src={elem.image_url} 
-            className='h-10 rounded-full -ml-2 border-2 border-white' />
+            className='h-10 w-10 rounded-full -ml-2 border-2 border-white bg-white' />
         })
       }
       {

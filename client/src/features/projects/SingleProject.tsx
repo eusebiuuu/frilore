@@ -118,7 +118,7 @@ export default function SingleProject() {
                 </button>
                 { projectDropdown && project && (
                   <ButtonsDropdown 
-                    lines={getProjectDropdown(project)}
+                    lines={() => getProjectDropdown(project)}
                     onDropdownClose={() => setProjectDropdown(false)}
                   />
                 )}

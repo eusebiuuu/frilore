@@ -14,7 +14,7 @@ export default function Tag(props: Props) {
     textColour = tagClasses[props.color].text;
   }
   return (
-    <div className={`rounded-xl h-8 px-2 w-fit py-1 ${props.classNames} ${bgColour} ${textColour}`}>
+    <div className={`rounded-lg h-8 px-2 w-fit py-1 ${props.classNames} ${bgColour} ${textColour}`}>
       {props.children}
     </div>
   )

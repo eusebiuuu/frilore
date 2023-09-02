@@ -1,6 +1,5 @@
 import logo from '../assets/logo.svg'
 import { IoMdNotificationsOutline } from 'react-icons/io'
-import { BsLayoutSidebar } from 'react-icons/bs'
 import { useUserContext } from '../context/user';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -21,7 +20,7 @@ type Notification = {
 const INITIAL_COUNT = 8;
 
 export default function Navbar() {
-  const { onSidebarToggle, user } = useUserContext();
+  const { user } = useUserContext();
   const [notifications, setNotifications] = useState<Notification[] | []>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [limit, setLimit] = useState<number | string>(INITIAL_COUNT);
@@ -133,11 +132,8 @@ export default function Navbar() {
               </div>
             </Link>
             <img src={user.image_url} className='rounded-full w-11 h-11 mx-2' />
-            <button className='md:hidden pl-4' onClick={() => onSidebarToggle(true)}>
-              <BsLayoutSidebar size={40} />
-            </button>
           </>)
-          : <div>
+          : <div className='flex [&>a]:mx-3 [&>a]:text-xl'>
             <Link to='/'>Home</Link>
             <Link to='/register'>Register</Link>
             <Link to='/login'>Login</Link>

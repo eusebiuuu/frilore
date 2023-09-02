@@ -30,12 +30,14 @@ export type Task = {
   assignments: Assignment[],
   open?: boolean,
   created_at: Date,
+  order_num?: number,
 }
 
 export type List = {
   list_id: string,
   title: string,
-  tasks: Task[]
+  tasks: Task[],
+  order_num?: number,
 }
 
 export type Member = {

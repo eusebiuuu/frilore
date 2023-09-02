@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ModalWrapper from "./ModalWrapper";
+import LoadingButton from "./LoadingButton";
 
 export type GeneralModalProps = {
   question: string,
@@ -29,13 +30,25 @@ export default function Modal(props: GeneralModalProps) {
   return (
     <ModalWrapper>
       <div className='bg-white rounded-lg p-6 w-1/2'>
-        <div className="mx-auto my-4">{props.question}</div>
+        <div className="w-full text-center mb-6 font-bold text-lg">{props.question}</div>
         <div className='flex justify-around'>
-          <button onClick={() => handleLeftClick()}>{props.leftContent || 'Cancel'}</button>
+          <button
+            onClick={() => handleLeftClick()}
+            className='border-black border-solid border-2 font-bold px-4 py-2 rounded-lg'
+          >
+            {props.leftContent || 'Cancel'}
+          </button>
           {
             loading
-            ? <button>Loading...</button>
-            : <button onClick={() => handleRightClick()}>{props.rightContent}</button>
+            ? <LoadingButton text="Leaving..." />
+            : (
+              <button 
+                onClick={() => handleRightClick()}
+                className='bg-red-500 px-4 py-2 font-bold rounded-lg'
+              >
+                {props.rightContent}
+              </button>
+            )
           }
         </div>
       </div>

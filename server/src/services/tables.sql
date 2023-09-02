@@ -42,12 +42,14 @@ CREATE TABLE message (
 CREATE TABLE list (
   list_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
+  order_num INT,
   project UUID REFERENCES project(project_id) ON DELETE CASCADE
 );
 
 CREATE TABLE task (
   task_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
+  order_num INT,
   description VARCHAR(500) NOT NULL,
   priority VARCHAR(30) CONSTRAINT priority_constraint CHECK (priority = 'low' OR priority = 'high'),
   status VARCHAR(30) CONSTRAINT status_constraint CHECK 
