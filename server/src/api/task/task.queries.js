@@ -7,3 +7,7 @@ export const getTaskQuery = `SELECT * FROM task WHERE task_id = $1`;
 export const updateTaskQuery = `UPDATE task SET name = $1, description = $2, deadline = $3, list = $4, priority = $5, status = $6 WHERE task_id = $7 RETURNING *`;
 
 export const deleteTaskQuery = `DELETE FROM task WHERE task_id = $1`;
+
+export const updateTasksOrderQuery = (placeholders) => {
+  return `UPDATE task SET order_num = array_search(task_id, $1) WHERE task_id = ANY (ARRAY [${placeholders}]::uuid[]) RETURNING *`
+}

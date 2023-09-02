@@ -41,12 +41,12 @@ export default function Lists(props: Props) {
   }
 
   return (
-    <DragDropContext onDragEnd={(result) => onDragEnd(result, project, props.setProject)}>
+    <DragDropContext onDragEnd={async (result) => await onDragEnd(result, project, props.setProject)}>
       <StrictModeDroppable droppableId="lists" direction="horizontal" type='list'>
-        {(provider =>
+        {((provider) =>
           <div
             ref={provider.innerRef}
-            className='flex overflow-auto w-full'
+            className='grid grid-flow-col gap-6 overflow-auto w-full'
             {...provider.droppableProps}
           >
             {
@@ -61,7 +61,7 @@ export default function Lists(props: Props) {
                       >
                         <StrictModeDroppable droppableId={elem.list_id} type="task">
                           {(listProvider, snapshot) =>
-                            <div ref={listProvider.innerRef} className={`bg-white rounded-lg min-w-96 mb-6 mx-5`} 
+                            <div ref={listProvider.innerRef} className={`bg-white rounded-lg min-w-96 mb-6`} 
                               {...listProvider.droppableProps}>
                               <div 
                                 className='flex justify-between bg-gray-200 p-3 rounded-t-md'
@@ -73,20 +73,22 @@ export default function Lists(props: Props) {
                                   </button>
                                   { listDropdowns[listIdx] && (
                                     <ButtonsDropdown 
-                                      lines={getListDropdown(elem, project)}
+                                      lines={() => getListDropdown(elem, project)}
                                       onDropdownClose={() => handleListToggle(listIdx)}
                                     />
                                   )}
                                 </div>
                               </div>
-                              <div className={`${snapshot.isDraggingOver ? ' bg-blue-200' : 'bg-transparent'}`}>
+                              <div 
+                                className={`${snapshot.isDraggingOver ? ' bg-blue-200' : 'bg-transparent'}`}>
                                 <button 
-                                  className='w-full rounded-2xl border-dashed border-4 grid place-content-center py-1'
+                                  className='w-full rounded-2xl border-dashed border-4 
+                                    grid place-content-center py-1 my-4'
                                   onClick={() => handleTaskModalCreate(elem.list_id)}
                                 >
                                   <AiOutlinePlus size={30} />
                                 </button>
-                                <div className='grid grid-cols-1 gap-4'>
+                                <div>
                                   { elem.tasks.length > 0
                                     ? <Tasks list={elem} project={project} />
                                     : <h3 className="m-auto">No tasks yet</h3>

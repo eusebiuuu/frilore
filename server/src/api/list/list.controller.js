@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { checkPermissions, getSingleEntity } from "../utils.api.js";
 import pool from "../../services/database.js";
-import { createListQuery, deleteAllTasksQuery, deleteListQuery, getAllListsQuery, getSingleListQuery } from "./list.queries.js";
+import { createListQuery, deleteAllTasksQuery, deleteListQuery, getAllListsQuery, getSingleListQuery, updateListsOrderQuery } from "./list.queries.js";
 
 const getLists = async (req, res) => {
   const userID = req.user.user_id;
@@ -20,6 +20,20 @@ const createList = async (req, res) => {
   const newList = await pool.query(createListQuery, [title, projectID]);
   return res.status(StatusCodes.OK).json({
     list: newList.rows[0],
+  });
+}
+
+const editListsOrder = async (req, res) => {
+  const userID = req.user.user_id;
+  const { projectID, order } = req.body;
+  await checkPermissions(userID, projectID, true);
+  const placeholders = order.map((elem, idx) => { 
+    return `'${elem}'`;
+  }).join(',');
+  const currQuery = updateListsOrderQuery(placeholders);
+  const newLists = await pool.query(currQuery, [order]);
+  return res.status(StatusCodes.OK).json({
+    lists: newLists.rows,
   });
 }
 
@@ -48,6 +62,7 @@ const deleteList = async (req, res) => {
 export default {
   createList,
   deleteList,
+  editListsOrder,
   getLists,
   deleteAllTasks,
 }

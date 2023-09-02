@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user } = useUserContext();
   if (!user) {
     toast.error('You have to authenticate to access this route');
-    return <Navigate to='/home' replace />
+    return <Navigate to='/' replace />
   }
   return children;
 }

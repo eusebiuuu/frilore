@@ -202,6 +202,10 @@ button {
   .rotate-x {
     transform: rotateX(180deg);
   }
+  .blur {
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+  }
 }
 @media screen and (max-width: 500px) {
   h1 {
