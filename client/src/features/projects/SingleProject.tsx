@@ -42,6 +42,10 @@ export default function SingleProject() {
     })();
   }, []);
 
+  function handleProjectChange(newProject: CompleteProject) {
+    setProject(newProject);
+  }
+
   async function handleProjectLeave() {
     try {
       await customFetch.delete(`/registration/${projectID}/${user?.user_id}`);
@@ -76,7 +80,7 @@ export default function SingleProject() {
               <button className='bg-primary px-4 py-2 relative' onClick={() => setMembers(true)}>
                 View all members
               </button>
-              <div className={`absolute z-20 w-72 shadow-lg top-10 bg-white 
+              <div className={`absolute z-10 w-72 shadow-lg top-10 bg-white 
                 left-0 ${members ? 'block' : 'hidden'} h-80 overflow-auto`}>
                 <div className='w-full flex justify-between sticky top-0 p-2 bg-white shadow-md'>
                   <h3>Members</h3>
@@ -118,16 +122,15 @@ export default function SingleProject() {
                 </button>
                 { projectDropdown && project && (
                   <ButtonsDropdown 
-                    lines={() => getProjectDropdown(project)}
+                    lines={() => getProjectDropdown(project, handleProjectChange)}
                     onDropdownClose={() => setProjectDropdown(false)}
                   />
                 )}
               </div>
-              
             </div>
             <hr className='mb-3' />
             <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
-              {project && <Lists project={project} setProject={setProject} />}
+              {project && <Lists project={project} onProjectChange={handleProjectChange} />}
             </div>
           </div>
         </>

@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import ModalWrapper from "../../components/ModalWrapper";
-import { Member, Task } from "../projects/utils.project";
+import { CompleteProject, Member, Task } from "../projects/utils.project";
 import { TaskMember, prepareForObjectState } from "./utils.tasks";
 import TaskAssignments from "./TaskAssignments";
 import Loader from "../../components/Loader";
@@ -9,6 +9,7 @@ import { catchAxiosError } from "../../utils/utils";
 import LoadingButton from "../../components/LoadingButton";
 import { getStates } from "../../utils/getObjectsStates";
 import { notificationsSocket } from "../../socket";
+import { dummyTask } from "../../context/modals";
 
 export type CreateTaskModalProps = {
   onModalClose: () => void,
@@ -16,25 +17,15 @@ export type CreateTaskModalProps = {
   task?: Task,
   members: Member[],
   listID: string,
-  projectTitle: string,
-}
-
-const initialState: Task = {
-  task_id: '',
-  name: '',
-  status: 'to do',
-  deadline: '2023-05-23',
-  description: '',
-  assignments: [],
-  priority: 'high',
-  created_at: new Date()
+  project: CompleteProject,
+  onProjectChange: (project: CompleteProject) => void,
 }
 
 export default function CreateTaskModal(props: CreateTaskModalProps) {
-  const [task, setTask] = useState<Task>(props.task || initialState);
+  const [task, setTask] = useState<Task>(props.task || dummyTask);
   const [loading, setLoading] = useState(false);
-  const [taskMembers, setTaskMembers] = useState<TaskMember[] | []>([]);
-  const [initialTaskMembers, setInitialTaskMembers] = useState<TaskMember[] | []>([]);
+  const [taskMembers, setTaskMembers] = useState<TaskMember[]>([]);
+  const [initialTaskMembers, setInitialTaskMembers] = useState<TaskMember[]>([]);
 
   useEffect(() => {
     const newMembers: TaskMember[] = props.members.map(member => {
@@ -66,40 +57,62 @@ export default function CreateTaskModal(props: CreateTaskModalProps) {
   async function handleButtonClick() {
     setLoading(true);
     try {
-      let currTask;
+      let currResult;
       if (props.type === 'create') {
-        currTask = await customFetch.post('/task', {
+        currResult = await customFetch.post('/task', {
           listID: props.listID,
           ...task,
         });
       } else {
-        currTask = await customFetch.patch(`/task/${task.task_id}`, {
+        currResult = await customFetch.patch(`/task/${task.task_id}`, {
           listID: props.listID,
           ...task,
         });
       }
+      const currTask = currResult.data.task;
       const membersState = getStates(prepareForObjectState(initialTaskMembers), prepareForObjectState(taskMembers));
-      // console.log(membersState);
       for (const member of membersState.delete as TaskMember[]) {
-        notificationsSocket.emit('delete-assignment', task.name, props.projectTitle, member.user_id);
-        await customFetch.delete(`/assignment/${member.user_id}/${currTask.data.task.task_id}`);
+        notificationsSocket.emit('delete-assignment', task.name, props.project.name, member.user_id);
+        await customFetch.delete(`/assignment/${member.user_id}/${currTask.task_id}`);
       }
       for (const member of membersState.create as TaskMember[]) {
-        notificationsSocket.emit('create-assignment', task.name, props.projectTitle, member.user_id);
+        notificationsSocket.emit('create-assignment', task.name, props.project.name, member.user_id);
         await customFetch.post(`/assignment`, {
           newUserID: member.user_id,
-          taskID: currTask.data.task.task_id,
+          taskID: currTask.task_id,
           assignmentType: member.type,
         });
       }
       for (const member of membersState.update as TaskMember[]) {
-        notificationsSocket.emit('update-assignment', task.name, props.projectTitle, member.user_id);
+        notificationsSocket.emit('update-assignment', task.name, props.project.name, member.user_id);
         await customFetch.patch(`/assignment`, {
           currUserID: member.user_id,
           taskID: task.task_id,
           assignmentType: member.type,
         });
       }
+      const newResult = await customFetch.get(`/task/${currTask.task_id}`);
+      const newTask = newResult.data.task as Task;
+      props.onProjectChange({
+        ...props.project,
+        lists: props.project.lists.map(elem => {
+          if (elem.list_id !== props.listID) {
+            return elem;
+          }
+          if (props.type === 'create') {
+            return {
+              ...elem,
+              tasks: [ ...elem.tasks, newTask ]
+            }
+          }
+          return {
+            ...elem,
+            tasks: elem.tasks.map(taskElem => {
+              return taskElem.task_id === newTask.task_id ? newTask : taskElem;
+            })
+          }
+        })
+      })
     } catch (err) {
       catchAxiosError(err);
     } finally {

@@ -6,7 +6,7 @@ const userRouter = Router();
 
 userRouter.get('/teammates/:id', userController.getAllTeammates);
 userRouter.get('/:id', userController.getSingleUser);
-userRouter.post('/upload', userController.uploadImage);
+userRouter.post('/upload', checkAuthentication, userController.uploadImage);
 userRouter.patch('/', checkAuthentication, userController.editUser);
 userRouter.delete('/', checkAuthentication, userController.deleteUser);
 

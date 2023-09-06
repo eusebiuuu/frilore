@@ -17,11 +17,5 @@
   "bugs": {
     "url": "https://github.com/eusebiuuu/frilore/issues"
   },
-  "homepage": "https://github.com/eusebiuuu/frilore#readme",
-  "dependencies": {
-    "react-beautiful-dnd": "^13.1.1"
-  },
-  "devDependencies": {
-    "@types/react-beautiful-dnd": "^13.1.4"
-  }
+  "homepage": "https://github.com/eusebiuuu/frilore#readme"
 }

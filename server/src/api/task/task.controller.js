@@ -1,7 +1,21 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../../services/database.js";
 import { checkPermissions, deleteAllAssignments, getSingleEntity } from "../utils.api.js";
-import { createTaskQuery, deleteTaskQuery, getAssignedTasksQuery, updateTaskQuery, updateTasksOrderQuery } from "./task.queries.js";
+import { createTaskQuery, deleteTaskQuery, getAssignedTasksQuery, getSingleTaskQuery, updateTaskQuery, updateTasksOrderQuery } from "./task.queries.js";
+
+const getSingleTask = async (req, res) => {
+  const userID = req.user.user_id;
+  const { id: taskID } = req.params;
+  const matchingTask = await getSingleEntity(taskID, 'task', 'task_id');
+  const listID = matchingTask.rows[0].list;
+  const matchingList = await getSingleEntity(listID, 'list', 'list_id');
+  const projectID = matchingList.rows[0].project;
+  await checkPermissions(userID, projectID, false);
+  const task = await pool.query(getSingleTaskQuery, [taskID]);
+  return res.status(StatusCodes.OK).json({
+    task: task.rows[0],
+  });
+}
 
 const createTask = async (req, res) => {
   const userID = req.user.user_id;
@@ -80,5 +94,6 @@ export default {
   editTask,
   deleteTask,
   getAllAssignedTasks,
-  editTasksOrder
+  editTasksOrder,
+  getSingleTask,
 }

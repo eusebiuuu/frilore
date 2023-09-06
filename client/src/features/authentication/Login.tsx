@@ -55,12 +55,17 @@ export default function Login() {
           <div className='flex justify-between w-3/4 place-content-center border-b-2 border-solid border-b-black mb-4'>
             <input name='password' type={`${formData.visible ? 'text' : 'password'}`} className='pl-0 w-full' 
               value={formData.password} placeholder='Write your password' onChange={handleFormDataChange} />
-            <button onClick={handleVisibilityChange}>
+            <button type='button' onClick={handleVisibilityChange}>
               {
                 formData.visible
                 ? <AiFillEyeInvisible size='25' />
                 : <AiFillEye size='25' />
               }
+            </button>
+          </div>
+          <div className='w-full flex justify-center'>
+            <button type='submit' className='bg-white rounded-lg shadow-md px-4 py-2 font-bold'>
+              Login
             </button>
           </div>
         </form>

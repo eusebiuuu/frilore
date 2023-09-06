@@ -44,8 +44,7 @@ const MAX_TEAMMATES = 9;
 
 const getAllTeammates = async (req, res) => {
   const { id: userID } = req.params;
-  const { limit } = req.query;
-  const teammates = await pool.query(getTeammatesQuery, [userID, limit || MAX_TEAMMATES]);
+  const teammates = await pool.query(getTeammatesQuery, [userID, MAX_TEAMMATES]);
   return res.status(StatusCodes.OK).json({
     teammates: teammates.rows
   });

@@ -6,10 +6,12 @@ import Members from "../../components/Members";
 import ButtonsDropdown from "../../components/ButtonsDropdown";
 import { getTaskDropdown } from "./dropdownActions";
 import { useState } from "react";
+import { getFullDate } from "../tasks/utils.tasks";
 
 type Props = {
   list: List,
   project: CompleteProject,
+  onProjectChange: (project: CompleteProject) => void,
 }
 
 export default function Tasks(props: Props) {
@@ -42,7 +44,7 @@ export default function Tasks(props: Props) {
                     <div className='font-bold'>{taskElem.name}</div>
                     <div className='flex'>
                       <AiOutlineClockCircle size={23} />
-                      <div className='pl-1'>{taskElem.deadline} days</div>
+                      <div className='pl-1'>{getFullDate(taskElem.deadline)}</div>
                     </div>
                     <div className='relative'>
                       <button onClick={() => handleTaskToggle(taskIdx)}>
@@ -50,7 +52,8 @@ export default function Tasks(props: Props) {
                       </button>
                       { taskDropdowns[taskIdx] && (
                         <ButtonsDropdown
-                          lines={() => getTaskDropdown(taskElem, props.list.list_id, props.project)} 
+                          lines={() => getTaskDropdown(taskElem, 
+                            props.list.list_id, props.project, props.onProjectChange)} 
                           onDropdownClose={() => handleTaskToggle(taskIdx)}
                         />
                       )}

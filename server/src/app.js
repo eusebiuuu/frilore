@@ -5,6 +5,8 @@ import express from 'express'
 import version1Router from './versions/api-v1.js';
 import morgan from 'morgan'
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import RateLimit from 'express-rate-limit';
 import { notFoundMiddleware } from './middlewares/notFound.js';
 import { errorHandlerMiddleware } from './middlewares/error.js';
@@ -17,6 +19,10 @@ import store from 'connect-pg-simple'
 import { connectionData } from './services/database.js';
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -44,7 +50,7 @@ export const sessionMiddleware = session({
 
 app.set('trust proxy', 1);
 app.use(cors({
-  origin: ['http://localhost:5173']
+  origin: '*'
 }));
 app.use(RateLimit({
   windowMs: 100 * 60 * 15,
@@ -62,7 +68,9 @@ app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 app.use(morgan('common'));
 app.use('/api/v1', version1Router);
-app.use('/', (_, res) => res.send('<h1>Home page</h1>'));
+// app.use('/*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '..', '..', 'client', 'index.html'));
+// });
 authStrategies();
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

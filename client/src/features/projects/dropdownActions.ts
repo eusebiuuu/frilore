@@ -5,12 +5,26 @@ import customFetch from "../../lib/customFetch";
 import { catchAxiosError } from "../../utils/utils";
 import { CompleteProject, List, Task } from "./utils.project";
 
-export function getTaskDropdown(task: Task, listID: string, project: CompleteProject): Line[] {
+export function getTaskDropdown(task: Task, listID: string,
+  project: CompleteProject, onProjectChange: (project: CompleteProject) => void
+): Line[] {
   const { onGeneralModalChange, onModalToggle, onActionTaskChange, onSingleTaskChange } = useModalContext();
 
   async function handleTaskDelete() {
     try {
       await customFetch.delete(`/task/${task.task_id}`);
+      onProjectChange({
+        ...project,
+        lists: project.lists.map(elem => {
+          if (elem.list_id !== listID) {
+            return elem;
+          }
+          return {
+            ...elem,
+            tasks: elem.tasks.filter(currTask => currTask.task_id !== task.task_id)
+          }
+        })
+      })
     } catch (err) {
       catchAxiosError(err);
     }
@@ -32,7 +46,8 @@ export function getTaskDropdown(task: Task, listID: string, project: CompletePro
       listID,
       onModalClose: () => onModalToggle('actionTask', false),
       members: project.members,
-      projectTitle: project.name,
+      project,
+      onProjectChange,
     })
   }
 
@@ -59,12 +74,18 @@ export function getTaskDropdown(task: Task, listID: string, project: CompletePro
   ]
 }
 
-export function getListDropdown(list: List, project: CompleteProject): Line[] {
+export function getListDropdown(list: List, project: CompleteProject,
+  onProjectChange: (project: CompleteProject) => void
+): Line[] {
   const { onGeneralModalChange, onModalToggle } = useModalContext();
 
   async function handleListDelete() {
     try {
       await customFetch.delete(`/list/${list.list_id}`);
+      onProjectChange({
+        ...project,
+        lists: project.lists.filter(elem => elem.list_id !== list.list_id),
+      })
     } catch (err) {
       catchAxiosError(err);
     }
@@ -82,6 +103,18 @@ export function getListDropdown(list: List, project: CompleteProject): Line[] {
   async function handleAllTasksDelete() {
     try {
       await customFetch.delete(`/list/tasks/${list.list_id}/${project.project_id}`);
+      onProjectChange({
+        ...project,
+        lists: project.lists.map(elem => {
+          if (elem.list_id !== list.list_id) {
+            return elem;
+          }
+          return {
+            ...elem,
+            tasks: [],
+          }
+        })
+      })
     } catch (err) {
       catchAxiosError(err);
     }
@@ -108,16 +141,26 @@ export function getListDropdown(list: List, project: CompleteProject): Line[] {
   ]
 }
 
-export function getProjectDropdown(project: CompleteProject): Line[] {
+export function getProjectDropdown(
+  project: CompleteProject,
+  onProjectChange: (project: CompleteProject) => void,
+): Line[] {
   const { onListChange, onModalToggle, onGeneralModalChange } = useModalContext();
   const navigate = useNavigate();
 
   async function handleListCreate(title: string) {
     try {
-      await customFetch.post(`/list`, {
+      const result = await customFetch.post(`/list`, {
         title,
         projectID: project.project_id,
       });
+      onProjectChange({
+        ...project,
+        lists: [
+          ...project.lists,
+          { ...result.data.list }
+        ]
+      })
     } catch (err) {
       catchAxiosError(err);
     }
@@ -127,6 +170,8 @@ export function getProjectDropdown(project: CompleteProject): Line[] {
     onListChange(true, {
       action: handleListCreate,
       onModalClose: () => onModalToggle('list', false),
+      onProjectChange,
+      project,
     })
   }
 

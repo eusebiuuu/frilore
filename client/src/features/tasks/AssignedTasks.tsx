@@ -9,18 +9,7 @@ import customFetch from "../../lib/customFetch";
 import { Task } from "../projects/utils.project";
 import { catchAxiosError } from "../../utils/utils";
 import Loader from "../../components/Loader";
-
-const initialState: Task[] = [{
-  task_id: '',
-  name: '',
-  status: 'to do',
-  deadline: '2023-05-23',
-  description: '',
-  assignments: [],
-  priority: 'high',
-  open: false,
-  created_at: new Date(),
-}];
+import { useModalContext } from "../../context/modals";
 
 export default function AssignedTasks() {
   const [criteria, setCriteria] = useState('closest deadline');
@@ -28,9 +17,10 @@ export default function AssignedTasks() {
   const [keywords, setKeywords] = useState('');
   const [showStat, setShowStat] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [tasks, setTasks] = useState<Task[]>(initialState);
-  const [curTasks, setCurTasks] = useState<Task[]>(initialState);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [curTasks, setCurTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const { onSingleTaskChange, modalInfo, onModalToggle } = useModalContext();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -98,22 +88,18 @@ export default function AssignedTasks() {
     })
   }
 
-  function changeTaskModalDisplay(idx: number, val: boolean) {
-    setTasks(oldVal => {
-      return oldVal.map((elem, curIdx) => {
-        if (idx === curIdx) {
-          return {
-            ...elem,
-            open: val,
-          }
-        }
-        return elem;
-      })
-    })
+  function changeTaskModalDisplay(task: Task) {
+    onSingleTaskChange(true, {
+      task,
+      onModalClose: () => onModalToggle('singleTask', false),
+    });
   }
 
   return (
     <div className='w-full py-4 px-6'>
+      { modalInfo.singleTask.open && (
+        <TaskModal { ...modalInfo.singleTask.content } />
+      )}
       {
         loading
         ? <Loader size='big' />
@@ -152,10 +138,10 @@ export default function AssignedTasks() {
           </div>
           <div className='w-full'>
             {
-              curTasks.map((elem, idx) => {
+              curTasks.map(elem => {
                 return (
                   <div key={elem.task_id}>
-                    <div onClick={() => changeTaskModalDisplay(idx, true)}
+                    <div onClick={() => changeTaskModalDisplay(elem)}
                       className='w-full flex my-6 bg-white rounded-lg p-4 cursor-pointer'>
                       <div className='w-full'>
                         <div className='font-bold mb-2'>{elem.name}</div>
@@ -184,20 +170,15 @@ export default function AssignedTasks() {
                             <div className='pl-2'>{getFullDate(elem.deadline)}</div>
                           </div>
                         </Tag>
-                        <div>
-                          <Members members={tasks[idx].assignments.map(elem => {
-                            return {
-                              member_id: elem.user_id,
-                              username: elem.username,
-                              image_url: elem.image_url
-                            }
-                          })} />
-                        </div>
+                        <Members members={elem.assignments.map(elem => {
+                          return {
+                            member_id: elem.user_id,
+                            username: elem.username,
+                            image_url: elem.image_url
+                          }
+                        })} />
                       </div>
                     </div>
-                    { tasks[idx].open && (
-                      <TaskModal onModalClose={() => changeTaskModalDisplay(idx, false)} task={tasks[idx]} />
-                    )}
                   </div>
                 )
               })

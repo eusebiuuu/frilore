@@ -12,7 +12,7 @@ import { useModalContext } from "../../context/modals";
 
 type Props = {
   project: CompleteProject,
-  setProject: React.Dispatch<React.SetStateAction<CompleteProject | undefined>>
+  onProjectChange: (project: CompleteProject) => void,
 }
 
 export default function Lists(props: Props) {
@@ -33,15 +33,16 @@ export default function Lists(props: Props) {
   function handleTaskModalCreate(listID: string) {
     onActionTaskChange(true, {
       type: 'create',
-      onModalClose: () => onModalToggle('list', false),
+      onModalClose: () => onModalToggle('actionTask', false),
       members: project.members,
-      projectTitle: project.name,
+      project: project,
+      onProjectChange: props.onProjectChange,
       listID,
-    })
+    });
   }
 
   return (
-    <DragDropContext onDragEnd={async (result) => await onDragEnd(result, project, props.setProject)}>
+    <DragDropContext onDragEnd={async (result) => await onDragEnd(result, project, props.onProjectChange)}>
       <StrictModeDroppable droppableId="lists" direction="horizontal" type='list'>
         {((provider) =>
           <div
@@ -73,7 +74,7 @@ export default function Lists(props: Props) {
                                   </button>
                                   { listDropdowns[listIdx] && (
                                     <ButtonsDropdown 
-                                      lines={() => getListDropdown(elem, project)}
+                                      lines={() => getListDropdown(elem, project, props.onProjectChange)}
                                       onDropdownClose={() => handleListToggle(listIdx)}
                                     />
                                   )}
@@ -90,8 +91,10 @@ export default function Lists(props: Props) {
                                 </button>
                                 <div>
                                   { elem.tasks.length > 0
-                                    ? <Tasks list={elem} project={project} />
-                                    : <h3 className="m-auto">No tasks yet</h3>
+                                    ? <Tasks list={elem} project={project} onProjectChange={props.onProjectChange} />
+                                    : <div className="w-full text-center">
+                                      <h3>No tasks yet</h3>
+                                    </div>
                                   }
                                 </div>
                               </div>

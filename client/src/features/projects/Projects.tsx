@@ -6,6 +6,8 @@ import customFetch from "../../lib/customFetch";
 import { catchAxiosError } from "../../utils/utils";
 import { ProjectsWithMembers } from "../projects/utils.project";
 import Loader from "../../components/Loader";
+import { getFullDate } from "../tasks/utils.tasks";
+import { getNonEmptyContent } from "../../utils/emptyValue";
 
 export default function Projects() {
   const [criteria, setCriteria] = useState('oldest first');
@@ -71,20 +73,19 @@ export default function Projects() {
             {
               shownProjects.map(elem => {
                 return <Link to={`/projects/${elem.project_id}`} key={elem.project_id}
-                  className='p-4 bg-white shadow-md rounded-lg hover:bg-gray-300 transition-all'>
-                  <h3>{elem.name}</h3>
+                  className='p-4 bg-white shadow-md rounded-lg hover:bg-gray-200 transition-all'>
+                  <h3>{getNonEmptyContent(elem.name, 'No title provided')}</h3>
                   <hr />
                   <p className='py-4'>{elem.description}</p>
                   <div className='flex justify-between'>
                     <Members members={elem.members} />
-                    <div className='grid place-items-center'>Created at: {elem.created_at}</div>
+                    <div className='grid place-items-center'>
+                      Created on {getFullDate(elem.created_at)}
+                    </div>
                   </div>
                 </Link>
               })
             }
-          </div>
-          <div className='text-center py-4'>
-            Pagination
           </div>
         </>
       }

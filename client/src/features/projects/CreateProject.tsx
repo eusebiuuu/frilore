@@ -7,6 +7,7 @@ import LoadingButton from "../../components/LoadingButton";
 import { useUserContext } from "../../context/user";
 import { addMemberToProject, handleRegistrationsChange } from "./utils.project";
 import Loader from "../../components/Loader";
+import { getNonEmptyContent } from "../../utils/emptyValue";
 
 export type DetailedMember = {
   member_id: string,
@@ -168,7 +169,7 @@ export default function CreateProject() {
                       <div key={elem.member_id} className='mb-4 pb-2 border-b-2 border-b-gray-200 grid grid-cols-4 
                         [&>div]:place-content-center [&>div]:flex'>
                         <div>{elem.username}</div>
-                        <div className='text-gray-400 mx-4'>{elem.role}</div>
+                        <div className='text-gray-400 mx-4'>{getNonEmptyContent(elem.role, 'no role')}</div>
                         <div>
                           <input type='checkbox' checked={elem.is_leader} 
                             className='disabled:cursor-not-allowed cursor-pointer scale-150'

@@ -41,17 +41,17 @@ export const footerLinks = [
   {
     id: 10,
     name: 'About Us',
-    link: '/home',
+    link: '/',
   },
   {
     id: 11,
     name: 'Contact Us',
-    link: '/home',
+    link: '/',
   },
   {
     id: 12,
     name: 'Pricing',
-    link: '/pricing',
+    link: '/',
   },
 ];
 

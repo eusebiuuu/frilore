@@ -2,9 +2,18 @@ import { useState } from 'react';
 import { details, messages, numbers } from './utils'
 import image3 from '../../assets/home3.svg'
 import image1 from '../../assets/home1.svg'
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [idx, setIdx] = useState(0);
+
+  function handleContactUsClick() {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
   return (
     <div>
       <div className='bg-gray-100'>
@@ -14,10 +23,12 @@ export default function Home() {
             <div className='mb-4'>
               <h2>{messages[idx].title}</h2>
             </div>
-            <div className='text-sm'>
+            <div className='text-sm mb-6'>
               {messages[idx].subtitle}
             </div>
-            <button className='bg-primary rounded mt-6 px-4 py-2 hover:shadow-md'>Register for free</button>
+            <Link className='bg-primary rounded px-4 py-2 hover:shadow-md' to='/register'>
+              Register for free
+            </Link>
           </div>
           <div className='flex place-content-center'>
             <img src={messages[idx].image} className='h-72 mr-0 object-contain' />
@@ -56,15 +67,17 @@ export default function Home() {
       <div className='grid md:grid-cols-2 grid-cols-1 p-8 place-items-center gap-5'>
         <img src={image3} className='h-64' alt='Project' />
         <div>
-          <h2 className='w-80'>About Us</h2>
+          <h2 className='w-80 mb-3'>About Us</h2>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet justo ipsum. Sed accumsan quam vitae est varius fringilla. Pellentesque placerat vestibulum lorem sed porta. Nullam mattis tristique iaculis. Nullam pulvinar sit amet risus pretium auctor. Etiam quis massa pulvinar, aliquam quam vitae, tempus sem. Donec elementum pulvinar odio.</p>
-          <button className='bg-primary rounded mt-6 px-4 py-2 hover:shadow-md'>Contact Us</button>
+          <button className='bg-primary rounded mt-6 px-4 py-2 hover:shadow-md' onClick={handleContactUsClick}>
+            Contact Us
+          </button>
         </div>
       </div>
       <div className='bg-white grid md:grid-cols-2 grid-cols-1 p-8 place-items-center gap-5'>
         <div>
-          <h2>Some numbers to convince you we are the right choice</h2>
-          <p>We reached here with our hard work and dedication.</p>
+          <h2 className=' mb-3'>Some numbers to convince you we are the right choice</h2>
+          <p>We reached here with hard work and dedication.</p>
         </div>
         <div className='grid grid-cols-2 grid-rows-2'>
           {
@@ -74,7 +87,7 @@ export default function Home() {
                   <elem.icon size={40} />
                 </div>
                 <div className='p-4'>
-                  <h4>{elem.num}</h4>
+                  <h3>{elem.num}</h3>
                   <p>{elem.name}</p>
                 </div>
               </div>
@@ -85,9 +98,9 @@ export default function Home() {
       <div className='bg-gray-200 grid md:grid-cols-2 grid-cols-1 p-8 place-items-center gap-5'>
         <img src={image1} className='h-64' alt='Project' />
         <div>
-          <h2 className='w-80'>What have we built exactly?</h2>
+          <h2 className='w-80 mb-3'>What have we built exactly?</h2>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet justo ipsum. Sed accumsan quam vitae est varius fringilla. Pellentesque placerat vestibulum lorem sed porta. Nullam mattis tristique iaculis. Nullam pulvinar sit amet risus pretium auctor. Etiam quis massa pulvinar, aliquam quam vitae, tempus sem. Donec elementum pulvinar odio.</p>
-          <button className='bg-primary rounded mt-6 px-4 py-2 hover:shadow-md'>Try it for free</button>
+          <Link className='bg-primary rounded mt-6 px-4 py-2 hover:shadow-md' to='/register'>Try it for free</Link>
         </div>
       </div>
     </div>
