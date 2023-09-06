@@ -6,13 +6,28 @@ import { Projects } from "../profile/utils.profile";
 import project from '../../assets/project.png'
 import Chat from "./Chat";
 
+type ChatData = {
+  title: string,
+  chatID: string,
+}
+
+const initialState = {
+  title: '',
+  chatID: '',
+}
+
 export default function Groups() {
   const [projects, setProjects] = useState<Projects>();
   const [loading, setLoading] = useState(true);
-  const [chatID, setChatID] = useState<string | undefined>(undefined);
+  const [chatData, setChatData] = useState<ChatData>(initialState);
 
-  function handleChatIDChange(id: string | undefined) {
-    setChatID(id);
+  function handleChatDataChange(fieldName: string, value: string) {
+    setChatData(oldVal => {
+      return {
+        ...oldVal,
+        [fieldName]: value,
+      }
+    })
   }
 
   useEffect(() => {
@@ -27,6 +42,12 @@ export default function Groups() {
       }
     })();
   }, []);
+
+  function handleProjectClick(chatID: string, title: string) {
+    handleChatDataChange('chatID', chatID);
+    handleChatDataChange('title', title);
+  }
+
   return (
     <div className='w-full'>
       {
@@ -34,8 +55,8 @@ export default function Groups() {
         ? <Loader size='big' />
         : (<>
           {
-            chatID
-            ? <Chat chatID={chatID} onChatIDChange={() => handleChatIDChange(undefined)} />
+            chatData.chatID !== ''
+            ? <Chat {...chatData} onChatIDChange={() => handleChatDataChange('chatID', '')} />
             : <div className={`m-6 rounded-lg p-6 bg-white max-h-screen overflow-auto flex`}>
               <div className='w-full'>
                 <h2>Chats</h2>
@@ -44,7 +65,7 @@ export default function Groups() {
                   projects && projects.map(elem => {
                     return (
                       <div key={elem.project_id} className='flex hover:bg-gray-300 cursor-pointer 
-                        p-3 place-items-center' onClick={() => setChatID(elem.chat_id)}>
+                        p-3 place-items-center' onClick={() => handleProjectClick(elem.chat_id, elem.name)}>
                         <img src={project} className='w-16 h-16 rounded-full border-black border-2 border-solid' />
                         <div className='ml-5'>
                           <div className='font-bold text-lg'>{elem.name}</div>

@@ -1,7 +1,6 @@
 import { toast } from "react-toastify"
 import customFetch from "../../lib/customFetch"
 import { DetailedMember, Project } from "./CreateProject"
-import { catchAxiosError } from "../../utils/utils"
 import { getStates } from "../../utils/getObjectsStates"
 import { notificationsSocket } from "../../socket"
 
@@ -105,7 +104,7 @@ export async function addMemberToProject(
       }
     });
   } catch (err) {
-    catchAxiosError(err);
+    toast.error('User id not found');
   } finally {
     setMemberLoading(false);
   }

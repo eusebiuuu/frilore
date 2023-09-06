@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 export async function onDragEnd(
   result: DropResult, project: CompleteProject, 
-  setProject: React.Dispatch<React.SetStateAction<CompleteProject | undefined>>
+  onProjectChange: (project: CompleteProject) => void,
   ) {
   const { destination, source, draggableId, type } = result;
   // console.log(destination, source, draggableId);
@@ -41,6 +41,17 @@ export async function onDragEnd(
       ...listArr[endIdx],
       tasks: tasksArr[endIdx],
     }
+    onProjectChange({
+      ...project,
+      lists: project.lists.map(elem => {
+        if (elem.list_id === listArr[startIdx].list_id) {
+          return listArr[startIdx];
+        } else if (elem.list_id === listArr[endIdx].list_id) {
+          return listArr[endIdx];
+        }
+        return elem;
+      })
+    });
     if (listArr.length === 2) {
       try {
         await customFetch.patch(`/task/${movedTask.task_id}`, { listID: listArr[endIdx].list_id });
@@ -66,20 +77,16 @@ export async function onDragEnd(
         return;
       }
     }
-    console.log(listArr);
-    setProject(oldProject => {
-      if (!oldProject) return;
-      return {
-        ...project,
-        lists: project.lists.map(elem => {
-          if (elem.list_id === listArr[startIdx].list_id) {
-            return listArr[startIdx];
-          } else if (elem.list_id === listArr[endIdx].list_id) {
-            return listArr[endIdx];
-          }
-          return elem;
-        })
-      }
+    onProjectChange({
+      ...project,
+      lists: project.lists.map(elem => {
+        if (elem.list_id === listArr[startIdx].list_id) {
+          return listArr[startIdx];
+        } else if (elem.list_id === listArr[endIdx].list_id) {
+          return listArr[endIdx];
+        }
+        return elem;
+      })
     });
     toast.success('Task moved successfully');
   } else if (type === 'list') {
@@ -99,17 +106,14 @@ export async function onDragEnd(
       catchAxiosError(err);
       return;
     }
-    setProject(oldProject => {
-      if (!oldProject) return;
-      return {
-        ...oldProject,
-        lists: listArr.map((elem, idx) => {
-          return {
-            ...elem,
-            order_num: idx + 1,
-          }
-        }),
-      }
+    onProjectChange({
+      ...project,
+      lists: listArr.map((elem, idx) => {
+        return {
+          ...elem,
+          order_num: idx + 1,
+        }
+      }),
     });
     toast.success('List moved successfully');
   }

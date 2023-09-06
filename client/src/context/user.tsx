@@ -11,6 +11,7 @@ export type ContextValue = {
   logout: () => Promise<unknown>,
   login: (password: string, username: string) => Promise<unknown>,
   register: (password: string, username: string) => Promise<unknown>,
+  onUserChange: (user: User) => void,
 }
 
 type UserContextProps = {
@@ -24,13 +25,29 @@ const defaultState: ContextValue = {
   logout: async () => {},
   login: async () => {},
   register: async () => {},
+  onUserChange: () => {},
 }
 
 const UserContext = createContext(defaultState);
 
 export default function UserProvider({ children }: UserContextProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [user, setUser] = useState<User | undefined | null>(undefined);
+  const [user, setUser] = useState<User | undefined | null>({
+    "user_id": "3f0ee4b1-c232-49d9-baf5-dee451eab9a0",
+    "username": "eusebiuu",
+    "password": "$2b$10$FejZ4dxSwDRDDexoQrSLSeUEKbBzPHwRyeiFJF7fo8pNQlLEv87Lu",
+    "real_name": "",
+    "email": null,
+    "country": "Romania",
+    "role": "",
+    "birthday": null,
+    "image_public_id": null,
+    "image_url": "https://res.cloudinary.com/dwgihvjqj/image/upload/v1692532441/frilore/abstract-user-flat-4_pl9jts.png",
+    "google_id": null,
+    "github_id": null,
+    "description": "",
+    "last_login": "2023-08-27T11:11:28.995Z"
+  });
 
   useEffect(() => {
     socket.connect();
@@ -48,9 +65,6 @@ export default function UserProvider({ children }: UserContextProps) {
   //     try {
   //       const result = await customFetch.get('/auth');
   //       setUser(result.data.user);
-  //       if (result.data.user) {
-  //         connectToSocket();
-  //       }
   //     } catch (err) {
   //       catchAxiosError(err);
   //     }
@@ -91,6 +105,13 @@ export default function UserProvider({ children }: UserContextProps) {
       catchAxiosError(err);
     }
   }
+
+  function handleUserChange(newUser: User) {
+    return {
+      ...user,
+      ...newUser,
+    }
+  }
   
   function handleSidebarToggle(value: boolean) {
     setIsSidebarOpen(value);
@@ -103,6 +124,7 @@ export default function UserProvider({ children }: UserContextProps) {
     logout: logoutUser,
     login: loginUser,
     register: registerUser,
+    onUserChange: handleUserChange,
   }
 
   return (

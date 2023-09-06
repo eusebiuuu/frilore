@@ -14,13 +14,18 @@ type Message = {
   chat: string,
   content: string,
   created_at: Date,
+  username: string,
+  role: string,
 }
 
-export default function Chat({ chatID, onChatIDChange }: {
+export type ChatData = {
   chatID: string,
   onChatIDChange: () => void,
-}) {
-  const [messages, setMessages] = useState<Message[] | []>([]);
+  title: string,
+}
+
+export default function Chat({ chatID, onChatIDChange, title }: ChatData) {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [messageContent, setMessageContent] = useState('');
   const { user } = useUserContext();
@@ -65,43 +70,73 @@ export default function Chat({ chatID, onChatIDChange }: {
     onChatIDChange();
   }
 
+  function submitOnEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.code === 'Enter' || e.code === "NumpadEnter") {
+      e.preventDefault();
+      addMessage();
+      window.scrollTo(0, 0);
+    }
+  }
+
   return (
-    <ScrollableComponent action={() => setPage(old => old + 1)} destination="top"
-      className={`m-6 rounded-lg bg-white h-screen overflow-auto flex relative`}>
+    <div className={`m-6 rounded-lg bg-white h-screen`}>
       {
         loading
         ? <Loader size='big' />
         : <>
-          <div className='flex border-t-2 border-solid border-t-gray-500 sticky p-2 bottom-0 w-full bg-white'>
-            <input className='w-full border-none' placeholder="Write something" value={messageContent}
-              onChange={(e) => setMessageContent(e.target.value)} />
-            <button onClick={addMessage}>
-              <AiOutlineSend size={30} />
-            </button>
+          <div className="w-full bg-white shadow-md p-4 border-t-gray-500 sticky z-10 top-0">
+            <h2 className='font-bold'>{title}</h2>
+            <p className='m-0'>{messages.length} message shown</p>
           </div>
           {
-            messages.map(elem => {
-              const direction = user && user.user_id === elem.author ? 'justify-end' : '';
-              const bgColor = user && user.user_id === elem.author ? 'bg-blue-400' : 'bg-gray-200';
-              return (
-                <div key={elem.message_id} className={`w-full flex ${direction} my-3`}>
-                  <div className='w-1/2'>
-                    <div className='text-sm text-gray-400 ml-5'>
-                      {elem.author}
-                    </div>
-                    <div className={`w-full ${bgColor} p-4 rounded-3xl`}>
-                      <div className=''>{elem.content}</div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
+            messages.length === 0
+            ? <div className='w-full flex place-items-center'>
+              <h2>There are no messages to be displayed</h2>
+            </div>
+            : <>
+              <ScrollableComponent
+                action={() => setPage(old => old + 1)}
+                destination="top"
+                className={`overflow-auto h-[calc(100vh-10.575em)] flex relative p-4`}
+              >
+                {
+                  messages.map(elem => {
+                    const direction = user && user.user_id === elem.author ? 'justify-end' : '';
+                    const bgColor = user && user.user_id === elem.author ? 'bg-blue-300' : 'bg-gray-200';
+                    return (
+                      <div key={elem.message_id} className={`w-full flex ${direction} my-3`}>
+                        <div className='w-1/2'>
+                          <div className='text-sm text-gray-400 ml-5'>
+                            {`${elem.username} -- ${elem.role}`}
+                          </div>
+                          <div className={`w-full ${bgColor} p-4 rounded-3xl`}>
+                            <div className=''>{elem.content}</div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+              </ScrollableComponent>
+              <div className='flex border-t-2 border-solid border-t-gray-500 sticky p-2 bottom-0 w-full bg-white'>
+                <button className='rounded-full w-fit p-3 bg-red-400' onClick={handleChatLeave}>
+                  <BsArrowLeft size={30} />
+                </button>
+                <input
+                  className='w-full border-none text-lg'
+                  onKeyDown={submitOnEnter} 
+                  placeholder="Write something"
+                  value={messageContent}
+                  onChange={(e) => setMessageContent(e.target.value)}
+                />
+                <button onClick={addMessage}>
+                  <AiOutlineSend size={30} />
+                </button>
+              </div>
+            </>
           }
-          <button className='rounded-full w-fit p-3 m-4 sticky bottom-20 bg-red-400' onClick={handleChatLeave}>
-            <BsArrowLeft size={30} />
-          </button>
         </>
       }
-    </ScrollableComponent>
+    </div>
   )
 }

@@ -20,7 +20,7 @@ type Notification = {
 const INITIAL_COUNT = 8;
 
 export default function Navbar() {
-  const { user } = useUserContext();
+  const { user, logout } = useUserContext();
   const [notifications, setNotifications] = useState<Notification[] | []>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [limit, setLimit] = useState<number | string>(INITIAL_COUNT);
@@ -72,7 +72,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className='w-full h-20 bg-main shadow-lg flex justify-between align-middle text-center p-2 sticky top-0 z-10'>
+    <nav className='w-full h-20 bg-main shadow-lg flex justify-between align-middle text-center p-2 sticky top-0 z-20'>
       <div className='flex justify-around place-items-center text-center'>
         <img src={logo} className='h-14 w-14 inline m-4' />
         <div className='hidden md:inline'>
@@ -132,6 +132,9 @@ export default function Navbar() {
               </div>
             </Link>
             <img src={user.image_url} className='rounded-full w-11 h-11 mx-2' />
+            <div className='ml-4 text-xl font-bold'>
+              <button onClick={async () => await logout()}>Logout</button>
+            </div>
           </>)
           : <div className='flex [&>a]:mx-3 [&>a]:text-xl'>
             <Link to='/'>Home</Link>

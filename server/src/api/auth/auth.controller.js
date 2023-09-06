@@ -7,7 +7,9 @@ import bcrypt from 'bcrypt';
 
 const getCurrentUser = async (req, res) => {
   if (!req.user) {
-    return res.status(StatusCodes.NO_CONTENT);
+    return res.status(StatusCodes.OK).json({
+      msg: 'No user logged in'
+    });
   }
   const userID = req.user.user_id;
   const user = await getSingleEntity(userID, 'user_table', 'user_id');

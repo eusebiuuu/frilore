@@ -74,9 +74,7 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path='profile/:id' element={
-                <ProtectedRoute>
-                  <ForeignProfile />
-                </ProtectedRoute>
+                <ForeignProfile />
               } />
               <Route path='create-project' element={
                 <ProtectedRoute>

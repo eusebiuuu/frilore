@@ -1,36 +1,30 @@
 import { useEffect, useState } from "react";
 import { TaskMember } from "./utils.tasks";
 
+type AssignmentTypes = 'assignee' | 'reporter' | 'none';
+
 type Props = {
   members: TaskMember[],
   title: string,
   type: 'assignee' | 'reporter',
-  onTaskMembersChange: (idx: number, type: 'assignee' | 'reporter' | 'none') => void
+  onTaskMembersChange: (idx: number, type: AssignmentTypes) => void
 }
 
 export default function TaskAssignments(props: Props) {
-  const [membersStatus, setMembersStatus] = useState<number[]>(Array.from(props.members, 
-    member => getProperNum(member.type)
-  ));
+  const [membersStatus, setMembersStatus] = useState<AssignmentTypes[]>(
+    Array.from(props.members, member => member.type)
+  );
   
   useEffect(() => {
-    setMembersStatus(Array.from(props.members, 
-      member => getProperNum(member.type)
-    ));
+    setMembersStatus(Array.from(props.members, member => member.type));
   }, [props.members]);
 
-  function getProperNum(type: 'assignee' | 'reporter' | 'none') {
-    if (type === props.type) {
-      return 1;
-    } else if (type === 'none') {
-      return 0;
+  function handleMembersChange(idx: number, currType: 'assignee' | 'reporter' | 'none') {
+    if (currType === props.type) {
+      props.onTaskMembersChange(idx, 'none');
+    } else {
+      props.onTaskMembersChange(idx, props.type);
     }
-    return -1;
-  }
-
-  function handleMembersChange(idx: number, typeNum: number) {
-    if (typeNum !== 0 && typeNum !== 1) return;
-    props.onTaskMembersChange(idx, typeNum === 0 ? props.type : 'none');
   }
 
   return (
@@ -43,7 +37,7 @@ export default function TaskAssignments(props: Props) {
               <div key={elem.user_id} className='mb-4 border-b-2 border-b-gray-200 flex'>
                 <div>{elem.username}</div>
                 <div className='text-gray-400 mx-4'>{elem.role}</div>
-                <input type='checkbox' checked={membersStatus[idx] === 1} disabled={membersStatus[idx] === -1}
+                <input type='checkbox' checked={membersStatus[idx] === props.type}
                   onChange={() => handleMembersChange(idx, membersStatus[idx])}
                   className='scale-125 disabled:cursor-not-allowed' />
               </div>

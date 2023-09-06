@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { Task } from "../features/projects/utils.project";
+import { CompleteProject, Task } from "../features/projects/utils.project";
 import { TaskModalProps } from "../features/tasks/TaskModal";
 import { CreateTaskModalProps } from "../features/tasks/CreateTaskModal";
 import { ListModalProps } from "../features/projects/ListModal";
@@ -28,7 +28,7 @@ type Modals = {
   }
 }
 
-const dummyTask: Task = {
+export const dummyTask: Task = {
   task_id: '',
   name: '',
   status: 'to do',
@@ -58,7 +58,8 @@ const initialContextState: Modals = {
       onModalClose: dummyFunction,
       members: [],
       listID: '',
-      projectTitle: '',
+      project: {} as CompleteProject,
+      onProjectChange: () => {},
       type: 'create',
     }
   },
@@ -67,6 +68,8 @@ const initialContextState: Modals = {
     content: {
       action: dummyPromise,
       onModalClose: dummyFunction,
+      project: {} as CompleteProject,
+      onProjectChange: dummyFunction,
     }
   },
   general: {
