@@ -29,13 +29,13 @@ export type TaskMember = {
   role: string,
 }
 
-export const statusColour = new Map<string, string>([
+export const statusColour = new Map<string, Colour>([
   ['to do', 'red'],
   ['pending', 'orange'],
   ['completed', 'green']
 ]);
 
-export const priorityColour = new Map<string, string>([
+export const priorityColour = new Map<string, Colour>([
   ['high', 'red'],
   ['low', 'orange'],
 ]);

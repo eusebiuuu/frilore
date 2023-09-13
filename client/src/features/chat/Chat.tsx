@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import { AiOutlineSend } from "react-icons/ai";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import Loader from "../../components/Loader";
 import { useUserContext } from "../../context/user";
 import { socket } from "../../socket";
@@ -90,7 +90,7 @@ export default function Chat({ chatID, onChatIDChange, title }: ChatData) {
           </div>
           {
             messages.length === 0
-            ? <div className='w-full flex place-items-center'>
+            ? <div className='w-full flex place-items-center overflow-auto h-[calc(100vh-10.575em)] relative p-4'>
               <h2>There are no messages to be displayed</h2>
             </div>
             : <>
@@ -106,9 +106,9 @@ export default function Chat({ chatID, onChatIDChange, title }: ChatData) {
                     return (
                       <div key={elem.message_id} className={`w-full flex ${direction} my-3`}>
                         <div className='w-1/2'>
-                          <div className='text-sm text-gray-400 ml-5'>
+                          { (!user || user.user_id !== elem.author) && <div className='text-sm text-gray-400 ml-5'>
                             {`${elem.username} -- ${elem.role}`}
-                          </div>
+                          </div> }
                           <div className={`w-full ${bgColor} p-4 rounded-3xl`}>
                             <div className=''>{elem.content}</div>
                           </div>
@@ -118,23 +118,23 @@ export default function Chat({ chatID, onChatIDChange, title }: ChatData) {
                   })
                 }
               </ScrollableComponent>
-              <div className='flex border-t-2 border-solid border-t-gray-500 sticky p-2 bottom-0 w-full bg-white'>
-                <button className='rounded-full w-fit p-3 bg-red-400' onClick={handleChatLeave}>
-                  <BsArrowLeft size={30} />
-                </button>
-                <input
-                  className='w-full border-none text-lg'
-                  onKeyDown={submitOnEnter} 
-                  placeholder="Write something"
-                  value={messageContent}
-                  onChange={(e) => setMessageContent(e.target.value)}
-                />
-                <button onClick={addMessage}>
-                  <AiOutlineSend size={30} />
-                </button>
-              </div>
             </>
           }
+          <div className='flex border-t-2 border-solid border-t-gray-500 sticky p-2 bottom-0 w-full bg-white'>
+            <button className='rounded-full w-fit p-3 bg-red-400' onClick={handleChatLeave}>
+              <BsArrowLeft size={30} />
+            </button>
+            <input
+              className='w-full border-none text-lg'
+              onKeyDown={submitOnEnter} 
+              placeholder="Write something"
+              value={messageContent}
+              onChange={(e) => setMessageContent(e.target.value)}
+            />
+            <button onClick={addMessage}>
+              <AiOutlineSend size={30} />
+            </button>
+          </div>
         </>
       }
     </div>

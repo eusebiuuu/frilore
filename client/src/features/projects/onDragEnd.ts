@@ -1,7 +1,7 @@
 import { DropResult } from "react-beautiful-dnd";
 import { CompleteProject } from "./utils.project";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import { toast } from "react-toastify";
 
 export async function onDragEnd(

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { details, messages, numbers } from './utils'
+import { details, messages, numbers } from './utils.home'
 import image3 from '../../assets/home3.svg'
 import image1 from '../../assets/home1.svg'
 import { Link } from 'react-router-dom';

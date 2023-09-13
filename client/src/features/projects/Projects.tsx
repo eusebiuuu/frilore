@@ -3,7 +3,7 @@ import Members from "../../components/Members";
 import { Link } from "react-router-dom";
 import { FiSearch } from 'react-icons/fi'
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import { ProjectsWithMembers } from "../projects/utils.project";
 import Loader from "../../components/Loader";
 import { getFullDate } from "../tasks/utils.tasks";
@@ -69,24 +69,28 @@ export default function Projects() {
                 onChange={(e) => setKeyword(e.target.value)} />
             </div>
           </div>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4'>
-            {
-              shownProjects.map(elem => {
-                return <Link to={`/projects/${elem.project_id}`} key={elem.project_id}
-                  className='p-4 bg-white shadow-md rounded-lg hover:bg-gray-200 transition-all'>
-                  <h3>{getNonEmptyContent(elem.name, 'No title provided')}</h3>
-                  <hr />
-                  <p className='py-4'>{elem.description}</p>
-                  <div className='flex justify-between'>
-                    <Members members={elem.members} />
-                    <div className='grid place-items-center'>
-                      Created on {getFullDate(elem.created_at)}
+          {
+            shownProjects.length === 0
+            ? <h2>No project matched your search</h2>
+            : <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4'>
+              {
+                shownProjects.map(elem => {
+                  return <Link to={`/projects/${elem.project_id}`} key={elem.project_id}
+                    className='p-4 bg-white shadow-md rounded-lg hover:bg-gray-200 transition-all'>
+                    <h3>{getNonEmptyContent(elem.name, 'No title provided')}</h3>
+                    <hr />
+                    <p className='py-4'>{elem.description}</p>
+                    <div className='flex justify-between'>
+                      <Members members={elem.members} />
+                      <div className='grid place-items-center'>
+                        Created on {getFullDate(elem.created_at)}
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              })
-            }
-          </div>
+                  </Link>
+                })
+              }
+            </div>
+          }
         </>
       }
     </div>

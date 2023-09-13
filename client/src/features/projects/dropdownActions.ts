@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Line } from "../../components/ButtonsDropdown";
 import { useModalContext } from "../../context/modals";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import { CompleteProject, List, Task } from "./utils.project";
 
 export function getTaskDropdown(task: Task, listID: string,
@@ -158,7 +158,10 @@ export function getProjectDropdown(
         ...project,
         lists: [
           ...project.lists,
-          { ...result.data.list }
+          {
+            ...result.data.list,
+            tasks: [],
+          }
         ]
       })
     } catch (err) {

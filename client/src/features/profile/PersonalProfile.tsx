@@ -8,9 +8,8 @@ import { COUNTRIES, Projects, SelectMenuOption, User, getAge } from './utils.pro
 import project from '../../assets/project.png'
 import { Navigate } from 'react-router-dom'
 import customFetch from '../../lib/customFetch'
-import { toast } from 'react-toastify'
 import Loader from '../../components/Loader'
-import { catchAxiosError } from '../../utils/utils'
+import { catchAxiosError } from '../../utils/catchAxiosError'
 import Modal from '../../components/Modal'
 import LoadingButton from '../../components/LoadingButton'
 import { useUserContext } from '../../context/user'
@@ -18,7 +17,7 @@ import { useModalContext } from '../../context/modals'
 
 export default function PersonalProfile() {
   const { user, onUserChange } = useUserContext();
-  const { onModalToggle, onGeneralModalChange, modalInfo } = useModalContext();
+  const { modalInfo } = useModalContext();
   if (!user) {
     return <Navigate to='/' replace />
   }
@@ -28,10 +27,9 @@ export default function PersonalProfile() {
   const [projects, setProjects] = useState<Projects>([]);
   const [curUserData, setCurUserData] = useState<User>(user);
   const [saveLoading, setSaveLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const [file, setFile] = useState<null | File>(null);
 
-  function handleFormDataChange(e: ChangeEvent<HTMLInputElement>) {
+  function handleFormDataChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setUserData(oldVal => {
       if (!oldVal) return oldVal;
       return {
@@ -82,35 +80,22 @@ export default function PersonalProfile() {
     try {
       await handleFileUpload();
       await customFetch.patch(`/user`, userData);
+      console.log(userData);
       setFile(null);
       setCurUserData(userData);
       onUserChange(userData);
-      toast.success('Profile updated successfully');
     } catch (err) {
       catchAxiosError(err);
     } finally {
       setSaveLoading(false);
     }
+    window.location.reload();
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
-  }
-
-  async function handleProfileDelete() {
-    setDeleteLoading(true);
-    setDeleteLoading(false);
-  }
-
-  async function handleModalOpen() {
-    onGeneralModalChange(true, {
-      question: 'Are you sure? This cannot be undone!',
-      rightAction: handleProfileDelete,
-      rightContent: 'Delete',
-      onModalClose: () => onModalToggle('general', false),
-    })
   }
   
   return (
@@ -132,18 +117,20 @@ export default function PersonalProfile() {
               <Field icon={MdOutlineWorkOutline} text={userData.role === '' ? 'No role specified' : userData.role} />
               <Field icon={AiOutlineCalendar} text={getAge(userData.birthday)} />
               <Field icon={AiOutlineMail} text={userData.email ?? 'No email specified'} />
-              <Field icon={AiOutlineFundProjectionScreen} text={`Worked in ${projects.length} projects`} />
+              <Field icon={AiOutlineFundProjectionScreen} text={`Working in ${projects.length} projects`} />
             </div>
             <div className=' w-fit rounded-lg shadow-lg bg-white  p-4'>
               <h2 className='mb-2'>Edit profile</h2>
               <div className='grid grid-cols-2 gap-3 place-content-center'>
                 <Input inputName='username' name='Username' value={userData.username}
-                  onInputChange={handleFormDataChange} />
+                  onInputChange={handleFormDataChange} disabled={userData.username.startsWith('test_user_')} />
                 <Input inputName='real_name' name='Real name' value={userData.real_name}
                   onInputChange={handleFormDataChange} />
-                <Input inputName='email' name='Email' value={userData.email || ''}
+                <Input inputName='email' name='Email' type='email' value={userData.email}
                   onInputChange={handleFormDataChange} disabled={userData.google_id !== null} />
                 <Input inputName='role' name='Role' value={userData.role}
+                  onInputChange={handleFormDataChange} />
+                <Input inputName='birthday' type='date' value={userData.birthday} name='Birthday'
                   onInputChange={handleFormDataChange} />
                 <CountrySelector id='country' open={isOpen} 
                   onToggle={() => setIsOpen(val => !val)}
@@ -155,6 +142,15 @@ export default function PersonalProfile() {
                   selectedValue={COUNTRIES.find(option => option.title === userData.country) as SelectMenuOption}
                 />
               </div>
+              <div className='mt-3'>
+                <label htmlFor='description'>Description</label>
+                <textarea
+                  id='description'
+                  name='description'
+                  className='w-full border-2 border-gray-300 mt-1 rounded-lg'
+                  value={userData.description}
+                  onChange={handleFormDataChange} />
+                </div>
               <label className="block mt-3 mb-1 font-medium text-gray-900 dark:text-white" htmlFor="file_input">
                 Upload a new profile image
               </label>
@@ -185,7 +181,9 @@ export default function PersonalProfile() {
             <h2>Projects</h2>
             <div className=' grid grid-cols-2 gap-5 my-4'>
               {
-                projects.map(elem => {
+                projects.length === 0
+                ? <h3>No projects</h3>
+                : projects.map(elem => {
                   return (
                     <div key={elem.project_id} 
                       className='flex place-items-center bg-gray-100 transition-all rounded-md p-4'>
@@ -199,17 +197,6 @@ export default function PersonalProfile() {
                 })
               }
             </div>
-          </div>
-          <div className='w-full my-8'>
-            {
-              deleteLoading
-              ? <LoadingButton text={'Deleting...'} />
-              : (
-                <button className='float-right bg-red-500 font-bold p-4 rounded-xl'onClick={handleModalOpen}>
-                  Delete account
-                </button>
-              )
-            }
           </div>
         </>
       }

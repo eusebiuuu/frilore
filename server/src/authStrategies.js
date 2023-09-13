@@ -44,9 +44,14 @@ export default function authStrategies() {
       );
       return done(null, newUser.rows[0]);
     }
+    const existingUsername = await pool.query(
+      `SELECT * FROM user_table WHERE username = $1`,
+      [userEmail]
+    );
+    const currUsername = existingUsername.rowCount > 0 ? profile.id : userEmail;
     const newUser = await pool.query(
-      `INSERT INTO user_table (username, email, google_id) VALUES ($1, $1, $2) RETURNING *`,
-      [userEmail, profile.id]
+      `INSERT INTO user_table (username, email, google_id) VALUES ($1, $2, $3) RETURNING *`,
+      [currUsername, userEmail, profile.id]
     );
     done(null, newUser.rows[0]);
   }));
@@ -62,14 +67,19 @@ export default function authStrategies() {
     );
     if (existsUser.rowCount > 0) {
       const newUser = await pool.query(
-        `UPDATE user_table SET last_login = $1 WHERE gihub_id = $2 RETURNING *`,
+        `UPDATE user_table SET last_login = $1 WHERE github_id = $2 RETURNING *`,
         [new Date(), existsUser.rows[0].github_id]
       );
       return done(null, newUser.rows[0]);
     }
+    const existingUsername = await pool.query(
+      `SELECT * FROM user_table WHERE username = $1`,
+      [profile.username]
+    );
+    const currUsername = existingUsername.rowCount > 0 ? profile.id : profile.username;
     const newUser = await pool.query(
       `INSERT INTO user_table (username, github_id) VALUES ($1, $2) RETURNING *`,
-      [profile.username, profile.id]
+      [currUsername, profile.id]
     );
     done(null, newUser.rows[0]);
   }));

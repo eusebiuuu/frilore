@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client';
 
-export const socket = io('http://localhost:8000', {
+export const socket = io(`${window.location.origin.toString()}`, {
   autoConnect: false,
 });
 
-export const notificationsSocket = io('http://localhost:8000/notification', {
+export const notificationsSocket = io(`${window.location.origin.toString()}/notification`, {
   autoConnect: false,
 });

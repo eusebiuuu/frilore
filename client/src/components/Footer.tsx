@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import logo from '../assets/logo.svg'
-import { footerLinks, footerIcons } from './utils';
+import { footerLinks, footerIcons } from './utils.components';
 import { Link } from 'react-router-dom';
 import { AiOutlineSend } from 'react-icons/ai'
 

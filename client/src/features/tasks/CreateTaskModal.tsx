@@ -5,7 +5,7 @@ import { TaskMember, prepareForObjectState } from "./utils.tasks";
 import TaskAssignments from "./TaskAssignments";
 import Loader from "../../components/Loader";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import LoadingButton from "../../components/LoadingButton";
 import { getStates } from "../../utils/getObjectsStates";
 import { notificationsSocket } from "../../socket";

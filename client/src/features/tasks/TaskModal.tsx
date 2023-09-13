@@ -1,7 +1,7 @@
 import { GrClose, GrStatusGood } from "react-icons/gr";
 import Tag from "../../components/Tag";
 import Members from "../../components/Members";
-import { getFullDate } from "./utils.tasks";
+import { Colour, getFullDate, priorityColour, statusColour } from "./utils.tasks";
 import { MdPriorityHigh } from 'react-icons/md'
 import { BsFillPeopleFill } from 'react-icons/bs'
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -32,14 +32,15 @@ export default function TaskModal(props: TaskModalProps) {
               <MdPriorityHigh size={25} />
             </div>
             <div className='font-bold text-lg grid place-items-center ml-2'>Priority</div>
-            <Tag color='orange' classNames='ml-5'>{props.task.priority}</Tag>
+            <Tag color={priorityColour.get(props.task.priority) as Colour}
+              classNames='ml-5'>{props.task.priority}</Tag>
           </div>
           <div className='flex mt-6'>
             <div className='grid place-items-center'>
               <GrStatusGood size={25} />
             </div>
             <div className='font-bold text-lg grid place-items-center ml-4'>Status</div>
-            <Tag color='green' classNames='ml-5'>{props.task.status}</Tag>
+            <Tag color={statusColour.get(props.task.status) as Colour} classNames='ml-5'>{props.task.status}</Tag>
           </div>
           <div className='flex mt-6'>
             <div className='grid place-items-center'>

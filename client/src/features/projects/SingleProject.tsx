@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { CompleteProject } from "./utils.project";
 import { GrClose } from "react-icons/gr";
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import logo from '../../assets/logo.svg'
 import { Link, useNavigate, useParams } from "react-router-dom";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import Loader from "../../components/Loader";
 import ButtonsDropdown from "../../components/ButtonsDropdown";
 import Lists from "./Lists";
@@ -93,7 +92,7 @@ export default function SingleProject() {
                     return (
                       <div key={elem.member_id} className='w-full p-2'>
                         <Link to={`/profile/${elem.member_id}`} className="flex w-fit">
-                          <img src={logo} className='h-8 w-8 rounded-full' />
+                          <img src={elem.image_url} className='h-8 w-8 rounded-full' />
                           <div className='pl-3 grid place-items-center'>
                             {elem.username}
                           </div>
@@ -113,6 +112,9 @@ export default function SingleProject() {
           <div className='my-6'>
             💡Tip! Hold <code className='font-bold'>Shift</code> while scrolling to scroll horizontally! 😉
           </div>
+          <div className='my-6'>
+            Did you know❓ You can move tasks and lists by grabbing and then dragging them to the desired place. 😉
+          </div>
           <div className='bg-white rounded-md p-4 my-6 w-full'>
             <div className='flex justify-between pb-4 w-full'>
               <h2>Project overview</h2>
@@ -130,7 +132,13 @@ export default function SingleProject() {
             </div>
             <hr className='mb-3' />
             <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
-              {project && <Lists project={project} onProjectChange={handleProjectChange} />}
+              {project && project.lists && (<div>
+                {
+                  project.lists.length === 0
+                  ? <h2>This project doesn't have any lists</h2>
+                  : <Lists project={project} onProjectChange={handleProjectChange} />
+                }
+              </div>)}
             </div>
           </div>
         </>
