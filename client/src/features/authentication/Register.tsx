@@ -1,8 +1,10 @@
 import { AiFillEye, AiFillEyeInvisible, AiFillGithub, AiOutlineGoogle } from "react-icons/ai";
-import { Link } from "react-router-dom";
-import { tailwindClasses, thirdPartySignUp } from "./utils.auth";
+import { Link, useNavigate } from "react-router-dom";
+import { tailwindClasses } from "./utils.auth";
 import { ChangeEvent, useState } from "react";
 import { useUserContext } from "../../context/user";
+import { toast } from "react-toastify";
+import TestUsers from "./TestUsers";
 
 type Form = {
   username: string,
@@ -11,6 +13,7 @@ type Form = {
 }
 
 export default function Register() {
+  const navigate = useNavigate();
   const { register } = useUserContext();
   const [formData, setFormData] = useState<Form>({ username: '', password: '', visible: false });
 
@@ -34,7 +37,12 @@ export default function Register() {
 
   async function handleFormSubmit(e: ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (formData.username === '' || formData.password === '') {
+      toast.error('Empty values not allowed as input');
+      return;
+    }
     await register(formData.password, formData.username);
+    navigate('/');
   }
 
   return (
@@ -65,20 +73,19 @@ export default function Register() {
             </button>
           </div>
         </form>
-        <button className={`${tailwindClasses}`}>
-          <div className=' place-content-center flex w-full cursor-pointer'
-            onClick={async () => await thirdPartySignUp('google')}>
+        <TestUsers />
+        <a href={`${window.location.origin.toString()}/api/v1/auth/google`} className={`${tailwindClasses}`}>
+          <div className=' place-content-center flex w-full cursor-pointer'>
             <div className='pr-1'>Sign up with</div>
             <div><AiOutlineGoogle size={25} /></div>
           </div>
-        </button>
-        <button className={`${tailwindClasses}`}>
-          <div className=' place-content-center flex w-full cursor-pointer'
-            onClick={async () => await thirdPartySignUp('github')}>
+        </a>
+        <a href={`${window.location.origin.toString()}/api/v1/auth/github`} className={`${tailwindClasses}`}>
+          <div className=' place-content-center flex w-full cursor-pointer'>
             <div className='pr-1'>Sign up with</div>
             <div><AiFillGithub size={25} /></div>
           </div>
-        </button>
+        </a>
         <div className='mt-4'>
           <div className='inline pr-1'>Already have an account?</div>
           <Link to='/login' className='underline'>Go to the sign in page</Link>

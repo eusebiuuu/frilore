@@ -7,7 +7,7 @@ import Members from "../../components/Members";
 import TaskModal from "./TaskModal";
 import customFetch from "../../lib/customFetch";
 import { Task } from "../projects/utils.project";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import Loader from "../../components/Loader";
 import { useModalContext } from "../../context/modals";
 
@@ -138,7 +138,9 @@ export default function AssignedTasks() {
           </div>
           <div className='w-full'>
             {
-              curTasks.map(elem => {
+              curTasks.length === 0
+              ? <h2>No task matched your search</h2>
+              : curTasks.map(elem => {
                 return (
                   <div key={elem.task_id}>
                     <div onClick={() => changeTaskModalDisplay(elem)}

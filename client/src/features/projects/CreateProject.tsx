@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { AiFillMinusCircle } from "react-icons/ai";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingButton from "../../components/LoadingButton";
 import { useUserContext } from "../../context/user";
@@ -139,6 +139,14 @@ export default function CreateProject() {
                 className='rounded-md border-solid border-gray-200 border-2 w-full focus:border-black mb-5' />
             </div>
             <div>
+              <div className='my-4'>
+                List of dummy member ids:
+                <ul className='list-disc list-inside'>
+                  <li>{`b260984b-68e6-4b1c-8ee4-1b26895292e5`}</li>
+                  <li>{`47e04e23-0487-4b3c-87fe-15441cf8ff68`}</li>
+                  <li>{`5532c806-2627-4634-83ad-85e0a771f5f6`}</li>
+                </ul>
+              </div>
               <label htmlFor='addMem' className='font-bold text-lg block mb-3'>Add more members to the project</label>
               <input value={memberID} id='addMem' onChange={(e) => setMemberID(e.target.value)}
                 className='rounded-md border-solid border-gray-200 border-2 mb-5 focus:border-black' />

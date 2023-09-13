@@ -1,4 +1,4 @@
-import { SidebarLink, sidebarLinks } from "./utils"
+import { SidebarLink, sidebarLinks } from "./utils.components"
 import { Link as NavLink } from "react-router-dom"
 
 export default function SidebarContent() {

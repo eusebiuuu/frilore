@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user } = useUserContext();
+  
   if (!user) {
-    toast.error('You have to authenticate to access this route');
+    toast.error('Forbidden route. Redirecting to home page...');
     return <Navigate to='/' replace />
   }
   return children;

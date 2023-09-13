@@ -5,7 +5,7 @@ import { colours, getProjectsData, getTaskData, getTaskStatusData } from "./util
 import { useEffect, useState } from "react";
 import { Task } from "../projects/utils.project";
 import customFetch from "../../lib/customFetch";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import Loader from "../../components/Loader";
 import { useUserContext } from "../../context/user";
 

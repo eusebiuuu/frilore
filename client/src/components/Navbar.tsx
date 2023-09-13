@@ -1,11 +1,11 @@
 import logo from '../assets/logo.svg'
 import { IoMdNotificationsOutline } from 'react-icons/io'
 import { useUserContext } from '../context/user';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { notificationsSocket } from '../socket';
 import customFetch from '../lib/customFetch';
-import { catchAxiosError } from '../utils/utils';
+import { catchAxiosError } from '../utils/catchAxiosError';
 import { GrClose } from 'react-icons/gr';
 import { getFullDate } from '../features/tasks/utils.tasks';
 
@@ -23,9 +23,13 @@ export default function Navbar() {
   const { user, logout } = useUserContext();
   const [notifications, setNotifications] = useState<Notification[] | []>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const [limit, setLimit] = useState<number | string>(INITIAL_COUNT);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       try {
         const result = await customFetch.get(`/notification?limit=${limit}`);
@@ -71,6 +75,11 @@ export default function Navbar() {
     setLimit('all');
   }
 
+  async function logoutUser() {
+    await logout();
+    navigate('/');
+  }
+
   return (
     <nav className='w-full h-20 bg-main shadow-lg flex justify-between align-middle text-center p-2 sticky top-0 z-20'>
       <div className='flex justify-around place-items-center text-center'>
@@ -101,7 +110,9 @@ export default function Navbar() {
                   </div>
                   <div className='max-h-[400px] overflow-auto'>
                     {
-                      notifications.map(elem => {
+                      notifications.length === 0
+                      ? <h3>No notifications</h3>
+                      : notifications.map(elem => {
                         return (
                           <div key={elem.notification_id} className={`w-full border-t-2 border-gray-300 
                             border-solid px-4 py-2 hover:bg-gray-200 block place-content-start 
@@ -114,7 +125,7 @@ export default function Navbar() {
                         )
                       })
                     }
-                    { limit !== 'all' && (
+                    { limit !== 'all' && notifications.length === INITIAL_COUNT && (
                       <div className='flex place-content-center py-4 px-2 border-t-2 border-gray-300 border-solid'>
                         <button className='underline text-blue-500' onClick={handleSetLimitChange}>Show more</button>
                       </div>
@@ -133,7 +144,7 @@ export default function Navbar() {
             </Link>
             <img src={user.image_url} className='rounded-full w-11 h-11 mx-2' />
             <div className='ml-4 text-xl font-bold'>
-              <button onClick={async () => await logout()}>Logout</button>
+              <button onClick={logoutUser}>Logout</button>
             </div>
           </>)
           : <div className='flex [&>a]:mx-3 [&>a]:text-xl'>

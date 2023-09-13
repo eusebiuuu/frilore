@@ -1,17 +1,18 @@
+import React, { Suspense } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import FixedSidebar from "./components/FixedSidebar"
 import Footer from "./components/Footer"
 import Projects from "./features/projects/Projects"
-import SingleProject from "./features/projects/SingleProject"
+const SingleProject = React.lazy(() => import("./features/projects/SingleProject"));
 import MobileSidebar from "./components/MobileSidebar"
 import AssignedTasks from "./features/tasks/AssignedTasks"
-import PersonalProfile from "./features/profile/PersonalProfile"
-import ForeignProfile from "./features/profile/ForeignProfile"
+const PersonalProfile = React.lazy(() => import("./features/profile/PersonalProfile"));
+const ForeignProfile = React.lazy(() => import("./features/profile/ForeignProfile"));
 import Register from "./features/authentication/Register"
 import Login from "./features/authentication/Login"
-import Home from "./features/home/Home"
-import CreateProject from "./features/projects/CreateProject"
+const Home = React.lazy(() => import("./features/home/Home"));
+const CreateProject = React.lazy(() => import("./features/projects/CreateProject"));
 import Dashboard from "./features/dashboard/Dashboard"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
@@ -49,7 +50,9 @@ function App() {
               <Route index element={
                 user
                 ? <Dashboard />
-                : <Home />
+                : <Suspense fallback={<Loader size='big' />}>
+                  <Home />
+                </Suspense>
               } />
               <Route path='login' element={<Login />} />
               <Route path='register' element={<Register />} />
@@ -60,7 +63,9 @@ function App() {
               } />
               <Route path='projects/:id' element={
                 <ProtectedRoute>
-                  <SingleProject />
+                  <Suspense fallback={<Loader size='big' />}>
+                    <SingleProject />
+                  </Suspense>
                 </ProtectedRoute>
               } />
               <Route path='tasks' element={
@@ -70,21 +75,29 @@ function App() {
               } />
               <Route path='profile' element={
                 <ProtectedRoute>
-                  <PersonalProfile />
+                  <Suspense fallback={<Loader size='big' />}>
+                    <PersonalProfile />
+                  </Suspense>
                 </ProtectedRoute>
               } />
               <Route path='profile/:id' element={
-                <ForeignProfile />
+                <Suspense fallback={<Loader size='big' />}>
+                  <ForeignProfile />
+                </Suspense>
               } />
               <Route path='create-project' element={
                 <ProtectedRoute>
-                  <CreateProject />
+                  <Suspense fallback={<Loader size='big' />}>
+                    <CreateProject />
+                  </Suspense>
                 </ProtectedRoute>
               } />
               <Route path='create-project/:id' element={
                 <ProtectedRoute>
-                  <CreateProject />
-                </ProtectedRoute>
+                  <Suspense fallback={<Loader size='big' />}>
+                    <CreateProject />
+                  </Suspense>
+              </ProtectedRoute>
               } />
               <Route path='chat' element={
                 <ProtectedRoute>

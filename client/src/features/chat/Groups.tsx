@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { catchAxiosError } from "../../utils/utils";
+import { catchAxiosError } from "../../utils/catchAxiosError";
 import customFetch from "../../lib/customFetch";
 import Loader from "../../components/Loader";
 import { Projects } from "../profile/utils.profile";
@@ -62,18 +62,24 @@ export default function Groups() {
                 <h2>Chats</h2>
                 <hr />
                 {
-                  projects && projects.map(elem => {
-                    return (
-                      <div key={elem.project_id} className='flex hover:bg-gray-300 cursor-pointer 
-                        p-3 place-items-center' onClick={() => handleProjectClick(elem.chat_id, elem.name)}>
-                        <img src={project} className='w-16 h-16 rounded-full border-black border-2 border-solid' />
-                        <div className='ml-5'>
-                          <div className='font-bold text-lg'>{elem.name}</div>
-                          <div className='text-gray-500 text-sm'>{elem.description.slice(0, 100)}</div>
-                        </div>
-                      </div>
-                    )
-                  })
+                  !projects || projects.length === 0
+                  ? <h3>No chats available. Join or create a project first</h3>
+                  : <>
+                    {
+                      projects && projects.map(elem => {
+                        return (
+                          <div key={elem.project_id} className='flex hover:bg-gray-300 cursor-pointer 
+                            p-3 place-items-center' onClick={() => handleProjectClick(elem.chat_id, elem.name)}>
+                            <img src={project} className='w-16 h-16 rounded-full border-black border-2 border-solid' />
+                            <div className='ml-5'>
+                              <div className='font-bold text-lg'>{elem.name}</div>
+                              <div className='text-gray-500 text-sm'>{elem.description.slice(0, 100)}</div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+                  </>
                 }
               </div>
             </div>

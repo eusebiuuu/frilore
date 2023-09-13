@@ -1,7 +1,7 @@
 import { createContext, useState, ReactNode, useContext, useEffect } from "react";
 import { notificationsSocket, socket } from "../socket";
 import customFetch from "../lib/customFetch";
-import { catchAxiosError } from "../utils/utils";
+import { catchAxiosError } from "../utils/catchAxiosError";
 import { User } from "../features/profile/utils.profile";
 
 export type ContextValue = {
@@ -32,44 +32,47 @@ const UserContext = createContext(defaultState);
 
 export default function UserProvider({ children }: UserContextProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [user, setUser] = useState<User | undefined | null>({
-    "user_id": "3f0ee4b1-c232-49d9-baf5-dee451eab9a0",
-    "username": "eusebiuu",
-    "password": "$2b$10$FejZ4dxSwDRDDexoQrSLSeUEKbBzPHwRyeiFJF7fo8pNQlLEv87Lu",
-    "real_name": "",
-    "email": null,
-    "country": "Romania",
-    "role": "",
-    "birthday": null,
-    "image_public_id": null,
-    "image_url": "https://res.cloudinary.com/dwgihvjqj/image/upload/v1692532441/frilore/abstract-user-flat-4_pl9jts.png",
-    "google_id": null,
-    "github_id": null,
-    "description": "",
-    "last_login": "2023-08-27T11:11:28.995Z"
-  });
+  const [user, setUser] = useState<User | undefined | null>(
+    // {
+    //   "user_id": "3f0ee4b1-c232-49d9-baf5-dee451eab9a0",
+    //   "username": "eusebiuu",
+    //   "password": "$2b$10$FejZ4dxSwDRDDexoQrSLSeUEKbBzPHwRyeiFJF7fo8pNQlLEv87Lu",
+    //   "real_name": "",
+    //   "email": '',
+    //   "country": "Romania",
+    //   "role": "",
+    //   "birthday": '2022-11-12',
+    //   "image_public_id": null,
+    //   "image_url": "https://res.cloudinary.com/dwgihvjqj/image/upload/v1692532441/frilore/abstract-user-flat-4_pl9jts.png",
+    //   "google_id": null,
+    //   "github_id": null,
+    //   "description": "",
+    //   "last_login": "2023-08-27T11:11:28.995Z"
+    // }
+    null
+  );
+
+  async function connectToSockets() {
+    try {
+      const result = await customFetch.get('/auth');
+      setUser(result.data.user);
+      if (result.data.user) {
+        socket.connect();
+        socket.emit('user info', result.data.user);
+        notificationsSocket.connect();
+        notificationsSocket.emit('user info', result.data.user);
+        notificationsSocket.emit('join');
+      }
+    } catch (err) {
+      catchAxiosError(err);
+    }
+  }
 
   useEffect(() => {
-    socket.connect();
-    notificationsSocket.connect();
-    notificationsSocket.emit('join');
-    return () => {
-      socket.disconnect();
-      notificationsSocket.disconnect();
-      notificationsSocket.emit('leave');
-    }
+    (async () => {
+      await connectToSockets();
+    })();
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const result = await customFetch.get('/auth');
-  //       setUser(result.data.user);
-  //     } catch (err) {
-  //       catchAxiosError(err);
-  //     }
-  //   })();
-  // }, []);
 
   async function logoutUser() {
     if (!user) {
@@ -78,7 +81,9 @@ export default function UserProvider({ children }: UserContextProps) {
     try {
       await customFetch.delete('/auth/logout');
       setUser(undefined);
-      // disconnect from sockets & more similar
+      socket.disconnect();
+      notificationsSocket.emit('leave');
+      notificationsSocket.disconnect();
     } catch (err) {
       catchAxiosError(err);
     }
@@ -90,6 +95,7 @@ export default function UserProvider({ children }: UserContextProps) {
         password,
         username
       });
+      await connectToSockets();
     } catch (err) {
       catchAxiosError(err);
     }
@@ -101,6 +107,7 @@ export default function UserProvider({ children }: UserContextProps) {
         password,
         username
       });
+      await connectToSockets();
     } catch (err) {
       catchAxiosError(err);
     }
@@ -117,7 +124,7 @@ export default function UserProvider({ children }: UserContextProps) {
     setIsSidebarOpen(value);
   }
 
-  const value = {
+  const value: ContextValue = {
     isSidebarOpen,
     onSidebarToggle: handleSidebarToggle,
     user,

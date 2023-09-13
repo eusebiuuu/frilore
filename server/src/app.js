@@ -15,8 +15,6 @@ import authStrategies from './authStrategies.js';
 import session from 'express-session';
 import cloudinary from 'cloudinary'
 import fileUpload from 'express-fileupload'
-import store from 'connect-pg-simple'
-import { connectionData } from './services/database.js';
 
 const app = express();
 
@@ -30,17 +28,11 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const PgStore = store(session);
-
 export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   key: 'express.sid',
   resave: true,
   saveUninitialized: true,
-  // store: new PgStore({
-  //   ...connectionData,
-  //   database: 'cookies_store'
-  // }),
   cookie: {
     secure: false,
     maxAge: 3 * 24 * 60 * 60 * 1000,
@@ -67,11 +59,12 @@ app.use(passport.session());
 app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 app.use(morgan('common'));
-app.use('/api/v1', version1Router);
-// app.use('/*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '..', '..', 'client', 'index.html'));
-// });
 authStrategies();
+app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use('/api/v1', version1Router);
+app.use('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

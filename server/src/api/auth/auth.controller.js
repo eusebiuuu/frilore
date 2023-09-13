@@ -30,22 +30,14 @@ const register = async (req, res, next) => {
 }
 
 const logout = async (req, res) => {
-  req.logout();
-  res.redirect('/');
-}
-
-const githubAuth = async (req, res) => {
-  req.session.user_id = req.user.user_id;
-}
-
-const googleAuth = async (req, res) => {
-  req.session.user_id = req.user.user_id;
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 }
 
 export default {
   getCurrentUser,
   register,
   logout,
-  githubAuth,
-  googleAuth,
 }

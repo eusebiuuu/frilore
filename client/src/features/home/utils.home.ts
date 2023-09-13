@@ -50,7 +50,7 @@ export const details = [
 export const numbers = [
   {
     id: 1,
-    num: '20,000,000+',
+    num: '20,000+',
     name: 'Customers',
     icon: MdPeople
   },
@@ -68,7 +68,7 @@ export const numbers = [
   },
   {
     id: 4,
-    num: '1,000,000+',
+    num: '1,000+',
     name: 'Payments',
     icon: MdPayment
   }

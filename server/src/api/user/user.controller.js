@@ -16,15 +16,21 @@ const getSingleUser = async (req, res) => {
 
 const editUser = async (req, res) => {
   const userID = req.user.user_id;
-  const { username, real_name: realName, country, role, birthday } = req.body;
+  const { username, real_name: realName, country, role, description, birthday, email } = req.body;
+  // console.log(birthday);
   const matchingUser = await getSingleEntity(userID, 'user_table', 'user_id');
   const newUsername = username ?? matchingUser.rows[0].username;
   const newRealName = realName ?? matchingUser.rows[0].real_name;
   const newCountry = country ?? matchingUser.rows[0].country;
+  if (matchingUser.rows[0].google_id) {
+    email = null;
+  }
+  const newEmail = email ?? matchingUser.rows[0].email;
+  const newDescription = description ?? matchingUser.rows[0].description;
   const newRole = role ?? matchingUser.rows[0].role;
   const newBirthday = birthday ?? matchingUser.rows[0].birthday;
   const newUser = await pool.query(updateUserQuery, 
-    [newUsername, newRealName, newRole, newCountry, newBirthday, userID]
+    [newUsername, newRealName, newRole, newCountry, newBirthday, newEmail, newDescription, userID]
   );
   return res.status(StatusCodes.OK).json({
     user: newUser.rows[0],
@@ -81,8 +87,8 @@ const uploadImage = async (req, res) => {
 		});
 	}
 	await pool.query(
-    `UPDATE user_table SET image_public_id = $1 WHERE user_id = $2`,
-    [publicID, userID]
+    `UPDATE user_table SET image_public_id = $1, image_url = $2 WHERE user_id = $3`,
+    [result.public_id, result.secure_url, userID]
   );
 	return res.status(StatusCodes.OK).json({
 		image: {

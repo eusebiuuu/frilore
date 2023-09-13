@@ -11,15 +11,19 @@ export function notificationNamespaceLogic(io) {
     notificationNamespace.in(userID).emit('add-notification', notification.rows[0]);
   }
   
-  notificationNamespace.on('connection', socket => {
-    console.log(`Current user: ${socket.request.user.username}`);
-
+  notificationNamespace.on('connection', (socket) => {
+    let user = null;
+    socket.on('user info', (currUser) => {
+      user = currUser;
+      console.log(`Current user: ${user.username}`);
+    });
+    
     socket.on('join', () => {
-      socket.join(socket.request.user.user_id);
+      socket.join(user.user_id);
     });
 
     socket.on('leave', () => {
-      socket.leave(socket.request.user.user_id);
+      socket.leave(user.user_id);
     });
 
     socket.on('create-assignment', async (taskTitle, projectName, userID) => {

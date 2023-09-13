@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import customFetch from '../../lib/customFetch'
 import Loader from '../../components/Loader'
 import { Projects, User, getAge } from './utils.profile'
-import { catchAxiosError } from '../../utils/utils'
+import { catchAxiosError } from '../../utils/catchAxiosError'
 import { getNonEmptyContent } from '../../utils/emptyValue'
 
 type Teammates = {
@@ -79,7 +79,9 @@ export default function ForeignProfile() {
               </div>
               <div className='w-full grid grid-cols-3 grid-rows-3 gap-3'>
                 {
-                  teammates.map(elem => {
+                  teammates.length === 0
+                  ? <h2>No teammates</h2>
+                  : teammates.map(elem => {
                     return (
                       <div key={elem.user_id}>
                         <Link to={`/profile/${elem.user_id}`}>

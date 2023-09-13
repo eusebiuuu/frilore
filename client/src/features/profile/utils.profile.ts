@@ -10,7 +10,7 @@ export function getAge(birthday: string | undefined | null) {
   const curMonth = new Date().getMonth() + 1;
   const curDay = new Date().getDate();
   let age = curYear - birthYear;
-  age -= curMonth > birthMonth || (curMonth === birthMonth && curDay > birthDay) ? 1 : 0;
+  age -= curMonth > birthMonth || (curMonth === birthMonth && curDay > birthDay) ? 0 : 1;
   return `${age} years old`
 }
 
@@ -28,11 +28,11 @@ export type User = {
   password: string | null,
   real_name: string,
   country: string,
-  email: string | null,
+  email: string,
   role: string,
   image_public_id: string | null,
   image_url: string,
-  birthday: string | null,
+  birthday: string,
   google_id: null | string,
   github_id: null | string,
   description: string,

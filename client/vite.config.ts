@@ -9,5 +9,8 @@ export default defineConfig({
     setupFiles: ['./setupTests.ts'],
     testMatch: ['./**/*.test.tsx'],
     globals: true
+  },
+  build: {
+    outDir: '../server/public'
   }
 })
