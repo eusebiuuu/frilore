@@ -1,1 +1,0 @@
-function s(i,e){const f=i.filter(t=>{if(!e.find(d=>d.id===t.id))return t}),o=e.filter(t=>{if(!i.find(d=>d.id===t.id))return t}),r=e.filter(t=>{const d=i.find(n=>n.id===t.id?n:null);if(d&&JSON.stringify(t.body)!==JSON.stringify(d.body))return!0});return{create:o.map(t=>t.body),update:r.map(t=>t.body),delete:f.map(t=>t.body)}}export{s as g};
