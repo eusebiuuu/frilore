@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import Members from "../../components/Members";
 import ButtonsDropdown from "../../components/ButtonsDropdown";
 import { getTaskDropdown } from "./dropdownActions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getFullDate } from "../tasks/utils.tasks";
 
 type Props = {
@@ -18,6 +18,10 @@ export default function Tasks(props: Props) {
   const [taskDropdowns, setTaskDropdowns] = useState<boolean[]>(
     Array.from(props.list.tasks.map(_ => false))
   );
+
+  useEffect(() => {
+    setTaskDropdowns(Array.from(props.list.tasks.map(_ => false)));
+  }, [props.project]);
 
   function handleTaskToggle(taskIdx: number) {
     setTaskDropdowns(oldVal => {

@@ -65,16 +65,16 @@ export default function ForeignProfile() {
             <Field icon={AiOutlineFundProjectionScreen} text={`Worked in ${projects.length} projects`} />
           </div>
           <div className='rounded-md bg-white shadow-md p-4'>
-            <div className='relative mb-20'>
-              <h3 className='mb-6'>{getNonEmptyContent(userData.role, 'No role')}</h3>
-              <div className='absolute top-8 left-0 bg-gray-200 p-2 rounded-md'>
+            <div className='relative mb-5'>
+              <h3 className='mb-2'>{getNonEmptyContent(userData.role, 'No role')}</h3>
+              <div className='bg-gray-200 p-2 rounded-md'>
                 {getNonEmptyContent(userData.description, 'No description provided')}
               </div>
               <div className='absolute border-transparent border-b-8 border-l-8 border-r-8 border-b-gray-200
-                w-0 h-0 top-6 left-6'></div>
+                w-0 h-0 top-7 left-6'></div>
             </div>
             <div className='w-full'>
-              <div className='font-bold my-4'>
+              <div className='font-bold mb-4'>
                 Teammates
               </div>
               <div className='w-full grid grid-cols-3 grid-rows-3 gap-3'>

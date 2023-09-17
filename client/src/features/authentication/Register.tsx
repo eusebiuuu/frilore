@@ -1,4 +1,4 @@
-import { AiFillEye, AiFillEyeInvisible, AiFillGithub, AiOutlineGoogle } from "react-icons/ai";
+import { AiFillEye, AiFillEyeInvisible, AiFillGithub } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { tailwindClasses } from "./utils.auth";
 import { ChangeEvent, useState } from "react";
@@ -41,6 +41,10 @@ export default function Register() {
       toast.error('Empty values not allowed as input');
       return;
     }
+    if (formData.password.length < 6) {
+      toast.error('Password must have at least 6 characters');
+      return;
+    }
     await register(formData.password, formData.username);
     navigate('/');
   }
@@ -74,12 +78,6 @@ export default function Register() {
           </div>
         </form>
         <TestUsers />
-        <a href={`${window.location.origin.toString()}/api/v1/auth/google`} className={`${tailwindClasses}`}>
-          <div className=' place-content-center flex w-full cursor-pointer'>
-            <div className='pr-1'>Sign up with</div>
-            <div><AiOutlineGoogle size={25} /></div>
-          </div>
-        </a>
         <a href={`${window.location.origin.toString()}/api/v1/auth/github`} className={`${tailwindClasses}`}>
           <div className=' place-content-center flex w-full cursor-pointer'>
             <div className='pr-1'>Sign up with</div>

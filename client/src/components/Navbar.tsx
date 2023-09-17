@@ -27,17 +27,19 @@ export default function Navbar() {
   const [limit, setLimit] = useState<number | string>(INITIAL_COUNT);
 
   useEffect(() => {
-    if (!user) {
-      return;
-    }
     (async () => {
-      try {
-        const result = await customFetch.get(`/notification?limit=${limit}`);
-        setNotifications(result.data.notifications);
-      } catch (err) {
-        catchAxiosError(err);
+      if (user) {
+        try {
+          const result = await customFetch.get(`/notification?limit=${limit}`);
+          setNotifications(result.data.notifications);
+        } catch (err) {
+          catchAxiosError(err);
+        }
       }
     })();
+  }, [limit, user]);
+
+  useEffect(() => {
     notificationsSocket.on('add-notification', (notification) => {
       setNotifications(oldVal => {
         return [
@@ -60,7 +62,7 @@ export default function Navbar() {
       notificationsSocket.off('add-notification');
       notificationsSocket.off('read-notifications');
     }
-  }, [limit]);
+  }, []);
 
   function handleNotificationsOpen() {
     setIsOpen(true);

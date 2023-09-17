@@ -1,6 +1,6 @@
 # Dummy data
 /src/data
-
+/cert
 # Logs
 logs
 *.log
