@@ -76,7 +76,7 @@ Besides this, I plan to improve project's design and general app performance.
 Check the Postman API Docs [here](https://documenter.getpostman.com/view/24263146/2s9YC7SWYt).   
 
 ## Database structure
-   
+Check the database structure [here](https://github.com/eusebiuuu/frilore/assets/107063753/c3f053cb-8ded-4eae-968c-4aadc5e47a73).
 
 ## Code snippets
 
