@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import loginImage from '../../assets/login.svg'
-import { AiOutlineGoogle, AiFillGithub, AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
+import { AiFillGithub, AiFillEyeInvisible, AiFillEye } from 'react-icons/ai'
 import { tailwindClasses } from './utils.auth';
 import { ChangeEvent, useState } from 'react';
 import { useUserContext } from '../../context/user';
@@ -78,12 +78,6 @@ export default function Login() {
           </div>
         </form>
         <TestUsers />
-        <a href={`${window.location.origin.toString()}/api/v1/auth/google`} className={`${tailwindClasses}`}>
-          <div className=' place-content-center flex w-full cursor-pointer'>
-            <div className='pr-1'>Sign in with</div>
-            <div><AiOutlineGoogle size={25} /></div>
-          </div>
-        </a>
         <a href={`${window.location.origin.toString()}/api/v1/auth/github`} className={`${tailwindClasses}`}>
           <div className=' place-content-center flex w-full cursor-pointer'>
             <div className='pr-1'>Sign in with</div>

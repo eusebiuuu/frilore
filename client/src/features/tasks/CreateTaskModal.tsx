@@ -93,6 +93,7 @@ export default function CreateTaskModal(props: CreateTaskModalProps) {
       }
       const newResult = await customFetch.get(`/task/${currTask.task_id}`);
       const newTask = newResult.data.task as Task;
+      console.log(newTask);
       props.onProjectChange({
         ...props.project,
         lists: props.project.lists.map(elem => {

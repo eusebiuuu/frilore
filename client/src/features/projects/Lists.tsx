@@ -3,7 +3,7 @@ import { CompleteProject } from "./utils.project"
 import ButtonsDropdown from "../../components/ButtonsDropdown";
 import { AiOutlinePlus } from "react-icons/ai";
 import { getListDropdown } from "./dropdownActions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Draggable } from 'react-beautiful-dnd'
 import { onDragEnd } from "./onDragEnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
@@ -21,6 +21,10 @@ export default function Lists(props: Props) {
   const [listDropdowns, setListDropdowns] = useState(Array.from(
     project.lists.map(() => false)
   ));
+
+  useEffect(() => {
+    setListDropdowns(Array.from(project.lists.map(_ => false)));
+  }, [props.project]);
 
   function handleListToggle(idx: number) {
     return setListDropdowns(oldVal => {

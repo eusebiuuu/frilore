@@ -67,7 +67,7 @@ export default function SingleProject() {
   return (
     <div className={`${isSidebarOpen && 'md:w-[calc(100%-16rem)]'} w-full p-8`}>
       {
-        loading
+        loading || !project
         ? <Loader size='big' />
         : <>
           { modalInfo.general.open && <Modal {...modalInfo.general.content} /> }
@@ -88,7 +88,7 @@ export default function SingleProject() {
                   </button>
                 </div>
                 {
-                  project?.members.map(elem => {
+                  project.members.map(elem => {
                     return (
                       <div key={elem.member_id} className='w-full p-2'>
                         <Link to={`/profile/${elem.member_id}`} className="flex w-fit">
@@ -117,12 +117,12 @@ export default function SingleProject() {
           </div>
           <div className='bg-white rounded-md p-4 my-6 w-full'>
             <div className='flex justify-between pb-4 w-full'>
-              <h2>Project overview</h2>
+              <h2>{project.name}</h2>
               <div className='relative'>
                 <button onClick={() => setProjectDropdown(true)}>
                   <BsThreeDotsVertical size={40} />
                 </button>
-                { projectDropdown && project && (
+                { projectDropdown && (
                   <ButtonsDropdown 
                     lines={() => getProjectDropdown(project, handleProjectChange)}
                     onDropdownClose={() => setProjectDropdown(false)}
@@ -131,15 +131,17 @@ export default function SingleProject() {
               </div>
             </div>
             <hr className='mb-3' />
-            <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
-              {project && project.lists && (<div>
+            {project && project.lists && (
+              <div>
                 {
                   project.lists.length === 0
                   ? <h2>This project doesn't have any lists</h2>
-                  : <Lists project={project} onProjectChange={handleProjectChange} />
+                  : <div className='w-full shadow-[inset_0px_-12px_12px_rgba(0,0,0,0.8)] p-2 bg-transparent'>
+                    <Lists project={project} onProjectChange={handleProjectChange} />
+                  </div>
                 }
-              </div>)}
-            </div>
+              </div>
+            )}
           </div>
         </>
       }
