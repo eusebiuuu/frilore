@@ -1,6 +1,6 @@
 ## Welcome to Frilore - the project management tool to rule them all!
 
-Want to see the project in action? Click [here](http://frilore.xyz).  
+Want to see the project in action? Click [here](http://16.170.239.13/).  
 
 Want to see the API Docs? Click [here](https://documenter.getpostman.com/view/24263146/2s9YC7SWYt).  
 
