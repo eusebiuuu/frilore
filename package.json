@@ -4,6 +4,7 @@
   "description": "A project management tool to improve productivity in a team",
   "main": "index.js",
   "scripts": {
+    "install": "npm run install --prefix server & npm run install --prefix client",
     "dev": "npm run dev --prefix server & npm run dev --prefix client",
     "build": "npm run build --prefix client",
     "start": "npm run start --prefix server"
