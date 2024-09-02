@@ -1,4 +1,4 @@
-## Welcome to Frilore - the project management tool to rule them all!
+## Frilore
 
 Want to see the project in action? Click [here](http://13.60.98.91/).  
 
@@ -6,37 +6,24 @@ Want to see the API Docs? Click [here](https://documenter.getpostman.com/view/24
 
 [I want to see some code.](#code-snippets)  
 
-Add more
-
 ## Table of content
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Workflow](#workflow)
-  - [Technologies and tools](#technologies-and-tools)
-  - [Code structure](#code-structure)
-  - [Technical decisions](#technical-decisions)
-  - [Future implementations](#future-implementations)
+- [Technologies and tools](#technologies-and-tools)
+- [Code structure](#code-structure)
+- [Technical decisions](#technical-decisions)
 - [API docs](#api-docs)
 - [Database structure](#database-structure)
 - [Code snippets](#code-snippets)
+- [Future implementations](#future-updates)
 - [Conclusion](#conclusion)
 - [Licence](#licence)
 
 
 ## Overview
-### Introduction
-Welcome to my second full-stack project called **Frilore**. In this one, I focused on imitating a project management tool since I found this theme pretty challenging.  
+**Frilore** is a complex project management tool that intends to help the teams that needs a more organised and more efficient workflow by providing a variety of functionalities like: simple but effective tasks management and assignment, chatting, notifications, analytics and much more.
 
 
-**The entire project is structured and build only by me.**   
-
-
-### Workflow
-Throughout the building phase I focused on respecting the principles of a professional workflow like creating meaningful commits, using pull requests, writing readable code, respecting a predetermined plan, respecting deadlines and much more.  
-
-You can check my general plan [here](https://docs.google.com/document/d/1WPNRGDCBKOQlnnAGeoCDX3A48MTuQiz9MAKsM80vaug/edit?usp=sharing) (note that it's build based on my experience and I know it's not very professional).   
-
-### Technologies and tools
+## Technologies and tools
 This project was made with the help of various technologies and tools. Some of them are the following:  
 - Tailwind for CSS
 - React with Vite for front-end
@@ -48,7 +35,7 @@ This project was made with the help of various technologies and tools. Some of t
 - The deployment was made through AWS EC2 service   
 
 
-### Code structure
+## Code structure
 Fundamentally, both parts, front-end and back-end, were structured around features.  
 
 Front-end functionality is located mostly in components and features directories.   
@@ -64,12 +51,6 @@ I focused on handling React states locally and using the ContextAPI because Reac
 I used Docker and EC2 deployment because I see it's a more professional way of deploying full-stack web apps and it offers a lot of customisations.  
 
 Lastly, I didn't write any tests or create any CI/CD pipelines because I wanted to focus on the functionality of the app.   
-
-
-### Future updates
-In the near future, if time allows me, I plan to add more features: comments within tasks, individual chats, Google Sign Up, some AI chatbot (?) and sorting tasks within a list based on the status.  
-
-Besides this, I plan to improve project's design and general app performance.   
 
 
 ## API docs
@@ -150,6 +131,12 @@ for (const member of membersState.update as TaskMember[]) {
   });
 }
 ```
+
+
+## Future updates
+In the near future, if time allows me, I plan to add more features: comments within tasks, individual chats, Google Sign Up, some AI chatbot (?) and sorting tasks within a list based on the status.  
+
+Besides this, I plan to improve project's design and general app performance.   
 
 ## Conclusion
 Hope you enjoy the project as much as I do!  
