@@ -90,21 +90,105 @@ export function getStates(arrObj1: Array<ObjType>, arrObj2: Array<ObjType>) {
 
 #### Get single project query
 ```sql
-SELECT project_id, name, description, COALESCE(members, '[]'::json) AS members, COALESCE(lists_array.lists, '[]'::json) 
-AS lists FROM (SELECT p.project_id, p.name, p.description, user_info.members FROM project p LEFT JOIN (SELECT json_agg
-(json_build_object('member_id', user_table.user_id, 'username', username, 'role', role, 'image_url', user_table.
-image_url)) AS members, project_id FROM registration JOIN user_table ON user_table.user_id = registration.user_id GROUP 
-BY project_id) AS user_info ON p.project_id = user_info.project_id WHERE p.project_id = $1) AS project_data LEFT JOIN 
-(SELECT json_agg(json_build_object('list_id', l.list_id, 'title', l.title, 'order_num', l.order_num, 'tasks', COALESCE
-(tasks_array.tasks, '[]'::json)) ORDER BY l.order_num) AS lists, project FROM list l LEFT JOIN (SELECT json_agg
-(json_build_object('task_id', t.task_id, 'name', t.name, 'description', t.description, 'priority', t.priority, 
-'status', t.status, 'deadline', t.deadline, 'order_num', t.order_num, 'assignments', COALESCE(assignment_data.
-assignments, '[]'::json)) ORDER BY t.order_num) AS tasks, list FROM task t LEFT JOIN (SELECT json_agg(json_build_object
-('assignment_id', a.assignment_id, 'user_id', a.user_id, 'type', a.type, 'username', user_data.username, 'image_url', 
-user_data.image_url)) AS assignments, task FROM assignment a LEFT JOIN (SELECT * FROM user_table GROUP BY user_id) AS 
-user_data ON user_data.user_id = a.user_id GROUP BY task) AS assignment_data ON assignment_data.task = t.task_id GROUP 
-BY list) AS tasks_array ON tasks_array.list = l.list_id GROUP BY l.project) AS lists_array ON lists_array.project = 
-project_data.project_id
+SELECT project_id,
+    name,
+    description,
+    COALESCE(members, '[]'::json) AS members,
+    COALESCE(lists_array.lists, '[]'::json) AS lists
+FROM (
+        SELECT p.project_id,
+            p.name,
+            p.description,
+            user_info.members
+        FROM project p
+            LEFT JOIN (
+                SELECT json_agg (
+                        json_build_object(
+                            'member_id',
+                            user_table.user_id,
+                            'username',
+                            username,
+                            'role',
+                            role,
+                            'image_url',
+                            user_table.image_url
+                        )
+                    ) AS members,
+                    project_id
+                FROM registration
+                    JOIN user_table ON user_table.user_id = registration.user_id
+                GROUP BY project_id
+            ) AS user_info ON p.project_id = user_info.project_id
+        WHERE p.project_id = $1
+    ) AS project_data
+    LEFT JOIN (
+        SELECT json_agg(
+                json_build_object(
+                    'list_id',
+                    l.list_id,
+                    'title',
+                    l.title,
+                    'order_num',
+                    l.order_num,
+                    'tasks',
+                    COALESCE (tasks_array.tasks, '[]'::json)
+                )
+                ORDER BY l.order_num
+            ) AS lists,
+            project
+        FROM list l
+            LEFT JOIN (
+                SELECT json_agg (
+                        json_build_object(
+                            'task_id',
+                            t.task_id,
+                            'name',
+                            t.name,
+                            'description',
+                            t.description,
+                            'priority',
+                            t.priority,
+                            'status',
+                            t.status,
+                            'deadline',
+                            t.deadline,
+                            'order_num',
+                            t.order_num,
+                            'assignments',
+                            COALESCE(assignment_data.assignments, '[]'::json)
+                        )
+                        ORDER BY t.order_num
+                    ) AS tasks,
+                    list
+                FROM task t
+                    LEFT JOIN (
+                        SELECT json_agg(
+                                json_build_object (
+                                    'assignment_id',
+                                    a.assignment_id,
+                                    'user_id',
+                                    a.user_id,
+                                    'type',
+                                    a.type,
+                                    'username',
+                                    user_data.username,
+                                    'image_url',
+                                    user_data.image_url
+                                )
+                            ) AS assignments,
+                            task
+                        FROM assignment a
+                            LEFT JOIN (
+                                SELECT *
+                                FROM user_table
+                                GROUP BY user_id
+                            ) AS user_data ON user_data.user_id = a.user_id
+                        GROUP BY task
+                    ) AS assignment_data ON assignment_data.task = t.task_id
+                GROUP BY list
+            ) AS tasks_array ON tasks_array.list = l.list_id
+        GROUP BY l.project
+    ) AS lists_array ON lists_array.project = project_data.project_id
 ```
 
 #### Update assignments
